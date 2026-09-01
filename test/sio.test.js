@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const test = require("node:test");
 const { FIXED_SIO } = require("../api/_lib/config");
 const {
+  deliverSio,
   mapSioLead,
   ownPropertyForLead,
   parseSioResponse,
@@ -144,4 +145,35 @@ test("SIO response parser uses only documented status values", () => {
   );
   assert.equal(parseSioResponse(503, { status: "denied" }).state, "QUARANTINE");
   assert.equal(parseSioResponse(200, { status: "accepted" }).reason, "unexpected_sio_status");
+});
+
+test("SIO credentials fail closed independently for index and partner pages", async () => {
+  let fetchCount = 0;
+  const fetchImpl = async () => {
+    fetchCount += 1;
+    throw new Error("SIO must not be called without the page-specific key");
+  };
+  const baseConfig = {
+    ...FIXED_SIO,
+    postUrl: "https://exchange.standardinformation.test/post_test",
+    timeoutMs: 1000
+  };
+
+  const missingIndex = await deliverSio(normalized(), {
+    ...baseConfig,
+    apiKeysByPage: { index: "", partner: "partner-key" }
+  }, fetchImpl);
+  const missingPartner = await deliverSio(normalized({
+    page_name: "our_partner_offers",
+    selected_offer_id: "partner-offer"
+  }), {
+    ...baseConfig,
+    apiKeysByPage: { index: "index-key", partner: "" }
+  }, fetchImpl);
+
+  assert.equal(missingIndex.reason, "missing_sio_api_key_index");
+  assert.equal(missingIndex.credential_source, "SI_API_KEY");
+  assert.equal(missingPartner.reason, "missing_sio_api_key_partner");
+  assert.equal(missingPartner.credential_source, "SI_PARTNER_API_KEY");
+  assert.equal(fetchCount, 0);
 });

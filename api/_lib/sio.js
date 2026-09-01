@@ -14,6 +14,11 @@ const REPLACEMENT_PROJECT_INTENTS = new Set([
   "Whole-home replacement"
 ]);
 
+const SIO_KEY_SOURCE_BY_PAGE = Object.freeze({
+  index: "SI_API_KEY",
+  partner: "SI_PARTNER_API_KEY"
+});
+
 class SioMappingError extends Error {
   constructor(code, message) {
     super(message);
@@ -139,13 +144,44 @@ function parseSioResponse(httpStatus, body) {
 }
 
 async function deliverSio(lead, config, fetchImpl = fetch) {
-  if (!config.postUrl || !config.apiKey) {
-    return { state: "QUARANTINE", accepted: false, reason: "sio_unconfigured" };
+  const page = lead?.page;
+  const keySource = SIO_KEY_SOURCE_BY_PAGE[page];
+  const routing = { page, credential_source: keySource || "unmapped" };
+
+  if (!keySource) {
+    return {
+      state: "QUARANTINE",
+      accepted: false,
+      reason: "invalid_sio_page",
+      ...routing
+    };
+  }
+  const apiKey = String(config.apiKeysByPage?.[page] || "").trim();
+  if (!apiKey) {
+    return {
+      state: "QUARANTINE",
+      accepted: false,
+      reason: `missing_sio_api_key_${page}`,
+      ...routing
+    };
+  }
+  if (!config.postUrl) {
+    return {
+      state: "QUARANTINE",
+      accepted: false,
+      reason: "sio_unconfigured",
+      ...routing
+    };
   }
   let url;
   try { url = new URL(config.postUrl); } catch { /* handled below */ }
   if (!url || url.protocol !== "https:") {
-    return { state: "QUARANTINE", accepted: false, reason: "invalid_sio_url" };
+    return {
+      state: "QUARANTINE",
+      accepted: false,
+      reason: "invalid_sio_url",
+      ...routing
+    };
   }
 
   let payload;
@@ -155,7 +191,8 @@ async function deliverSio(lead, config, fetchImpl = fetch) {
     return {
       state: "QUARANTINE",
       accepted: false,
-      reason: error instanceof SioMappingError ? error.code : "sio_mapping_failed"
+      reason: error instanceof SioMappingError ? error.code : "sio_mapping_failed",
+      ...routing
     };
   }
 
@@ -165,7 +202,7 @@ async function deliverSio(lead, config, fetchImpl = fetch) {
     const response = await fetchImpl(config.postUrl, {
       method: "POST",
       headers: {
-        authorization: `Bearer ${config.apiKey}`,
+        authorization: `Bearer ${apiKey}`,
         "content-type": "application/json",
         accept: "application/json",
         "user-agent": "WindowMotiv-SIO-Router/1.0"
@@ -176,12 +213,13 @@ async function deliverSio(lead, config, fetchImpl = fetch) {
     });
     let body;
     try { body = await response.json(); } catch { body = null; }
-    return parseSioResponse(response.status, body);
+    return { ...parseSioResponse(response.status, body), ...routing };
   } catch (error) {
     return {
       state: "QUARANTINE",
       accepted: false,
-      reason: error?.name === "AbortError" ? "sio_timeout" : "sio_unreachable"
+      reason: error?.name === "AbortError" ? "sio_timeout" : "sio_unreachable",
+      ...routing
     };
   } finally {
     clearTimeout(timer);
@@ -191,6 +229,7 @@ async function deliverSio(lead, config, fetchImpl = fetch) {
 module.exports = {
   OWNER_PROPERTY_VALUES,
   REPLACEMENT_PROJECT_INTENTS,
+  SIO_KEY_SOURCE_BY_PAGE,
   SioMappingError,
   deliverSio,
   mapSioLead,

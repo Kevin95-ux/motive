@@ -259,6 +259,8 @@ function createHandler(dependencies = {}) {
         {
           accepted: sio.accepted,
           reason: sio.reason,
+          page: sio.page,
+          credential_source: sio.credential_source,
           price: sio.price,
           confirmation_id: sio.confirmation_id
         },

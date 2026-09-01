@@ -29,7 +29,10 @@ function getConfig(env = process.env) {
     sio: {
       ...FIXED_SIO,
       postUrl: String(env.SI_POST_URL || "").trim(),
-      apiKey: String(env.SI_API_KEY || "").trim(),
+      apiKeysByPage: {
+        index: String(env.SI_API_KEY || "").trim(),
+        partner: String(env.SI_PARTNER_API_KEY || "").trim()
+      },
       timeoutMs: boundedInteger(env.SI_TIMEOUT_MS, 12000, 1000, 30000)
     },
     trustedForm: {

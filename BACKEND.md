@@ -27,7 +27,8 @@ Required:
 
 - `TRUSTEDFORM_API_KEY`: TrustedForm v4 Certificate API password. The Basic Auth username is fixed to uppercase `API`.
 - `SI_POST_URL`: `https://exchange.standardinformation.io/post_test` for test delivery.
-- `SI_API_KEY`: SIO bearer credential.
+- `SI_API_KEY`: SIO bearer credential used only for `index.html` leads.
+- `SI_PARTNER_API_KEY`: SIO bearer credential used only for `Partner.html` leads.
 - `GHL_WEBHOOK_URL`: HTTPS GoHighLevel inbound webhook that performs a phone/email contact upsert.
 
 Recommended:
@@ -52,6 +53,12 @@ The SIO payload is nested JSON with `data`, `meta`, and `contact` objects. The r
 
 - `windows_project_type=Interested in replacement windows`
 - `source_id` falls back to `Motiv` when `subID1` is empty
+
+SIO credentials are selected server-side from the normalized page: `index` uses
+`SI_API_KEY`, while `partner` uses `SI_PARTNER_API_KEY`. There is no cross-page
+fallback. If the required key is missing, delivery is quarantined before any SIO
+request, and the structured SIO transition logs the page and environment-variable
+name without logging the credential.
 
 `windows_material` and `jornaya_lead_id` are omitted. `offer_id` is omitted when empty. The exact rendered TCPA disclosure is keyed by page in `api/_lib/config.js`. A missing page key produces an error-level structured log and quarantines delivery before SIO is called.
 

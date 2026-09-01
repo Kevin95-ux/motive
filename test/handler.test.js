@@ -10,6 +10,7 @@ const env = {
   TRUSTEDFORM_API_KEY: "trustedform-test-key",
   SI_POST_URL: "https://exchange.standardinformation.test/post_test",
   SI_API_KEY: "sio-test-key",
+  SI_PARTNER_API_KEY: "sio-partner-test-key",
   GHL_WEBHOOK_URL: "https://ghl.example.test/hook",
   LEAD_ALLOWED_ORIGINS: "https://staging.example.test"
 };
@@ -98,6 +99,86 @@ test("SIO success captures price and confirmation", async () => {
     confirmation_id: "confirmation-123"
   });
   assert.equal(errors.some((entry) => entry.includes("tcpa_consent_text_missing")), false);
+});
+
+test("partner delivery selects and logs only the partner SIO key source", async () => {
+  const calls = [];
+  const logs = [];
+  const fetchImpl = async (url, options) => {
+    calls.push({ url: String(url), options });
+    if (String(url).startsWith("https://cert.trustedform.com/")) {
+      return new Response(JSON.stringify({
+        outcome: "success",
+        retain: { results: [{}] },
+        match_lead: { result: { success: true } }
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    }
+    if (String(url).startsWith("https://exchange.standardinformation.test/")) {
+      return new Response(JSON.stringify({
+        status: "success",
+        price: 10,
+        confirmation_id: "partner-confirmation"
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    }
+    return new Response("GHL unavailable", { status: 503 });
+  };
+  const handler = createHandler({
+    env,
+    fetchImpl,
+    zipAllowlist: new Set(["12207"]),
+    logger: {
+      log(message) { logs.push(message); },
+      warn(message) { logs.push(message); },
+      error(message) { logs.push(message); }
+    }
+  });
+  const res = responseRecorder();
+  await handler(request({ normalized_lead: validLead({
+    page_name: "our_partner_offers",
+    selected_offer_id: "partner-offer"
+  }) }), res);
+
+  const sioCall = calls.find((call) => call.url.startsWith("https://exchange.standardinformation.test/"));
+  assert.ok(sioCall);
+  assert.equal(sioCall.options.headers.authorization, "Bearer sio-partner-test-key");
+  assert.equal(logs.some((entry) => entry.includes('"page":"partner"') && entry.includes('"credential_source":"SI_PARTNER_API_KEY"')), true);
+  assert.equal(logs.some((entry) => entry.includes("sio-partner-test-key")), false);
+});
+
+test("partner delivery fails closed when its SIO key is missing", async () => {
+  const calls = [];
+  const logs = [];
+  const handler = createHandler({
+    env: { ...env, SI_PARTNER_API_KEY: "" },
+    fetchImpl: async (url) => {
+      calls.push(String(url));
+      if (String(url).startsWith("https://cert.trustedform.com/")) {
+        return new Response(JSON.stringify({
+          outcome: "success",
+          retain: { results: [{}] },
+          match_lead: { result: { success: true } }
+        }), { status: 200, headers: { "content-type": "application/json" } });
+      }
+      return new Response(JSON.stringify({ success: true }), { status: 200 });
+    },
+    zipAllowlist: new Set(["12207"]),
+    logger: {
+      log(message) { logs.push(message); },
+      warn(message) { logs.push(message); },
+      error(message) { logs.push(message); }
+    }
+  });
+  const res = responseRecorder();
+  await handler(request({ normalized_lead: validLead({
+    page_name: "our_partner_offers",
+    selected_offer_id: "partner-offer"
+  }) }), res);
+  const body = JSON.parse(res.body);
+
+  assert.equal(body.delivery.sio, "QUARANTINE");
+  assert.equal(calls.some((url) => url.startsWith("https://exchange.standardinformation.test/")), false);
+  assert.equal(logs.some((entry) => entry.includes("missing_sio_api_key_partner")), true);
+  assert.equal(logs.some((entry) => entry.includes('"credential_source":"SI_PARTNER_API_KEY"')), true);
 });
 
 test("missing page TCPA text logs loudly and quarantines before SIO", async () => {
