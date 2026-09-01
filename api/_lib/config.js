@@ -5,13 +5,9 @@ const path = require("node:path");
 const FIXED_SIO = Object.freeze({
   sourceIdFallback: "Motiv",
   windowsProjectType: "Interested in replacement windows",
-
-  // TODO: Set each value to the exact approved disclosure shown to the
-  // consumer after REPLACE_WITH_O_AND_O_COMPANY_NAME is resolved. An unset
-  // value is deliberately omitted from SIO rather than guessed.
   tcpaConsentTextByPage: Object.freeze({
-    index: "",
-    partner: ""
+    index: "By checking this box and clicking “Submit My Project,” I provide my electronic signature and consent to receive marketing calls and text messages, including through automated technology or prerecorded messages, from Motiv Brands Group, LLC. DBA Window Motiv, its service providers, and participating window and home-improvement providers regarding my inquiry at the telephone number provided. Consent is not a condition of purchase. Message and data rates may apply. I agree to the Terms of Use and acknowledge the Privacy Policy .",
+    partner: "By checking this box and clicking “Submit My Offer Request,” I provide my electronic signature and consent to receive marketing calls and text messages, including through automated technology or prerecorded messages, from Motiv Brands Group, LLC. DBA Window Motiv, its service providers, and participating window and home-improvement providers regarding my inquiry at the telephone number provided. This may include the participating provider associated with my selected offer when I request or permit direct matching. Consent is not a condition of purchase. Message and data rates may apply. I agree to the Terms of Use and acknowledge the Privacy Policy ."
   })
 });
 

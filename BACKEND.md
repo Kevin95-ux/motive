@@ -53,7 +53,7 @@ The SIO payload is nested JSON with `data`, `meta`, and `contact` objects. The r
 - `windows_project_type=Interested in replacement windows`
 - `source_id` falls back to `Motiv` when `subID1` is empty
 
-`windows_material` and `jornaya_lead_id` are omitted. `offer_id` is omitted when empty. TCPA consent text is keyed by page in `api/_lib/config.js`, but both values intentionally remain unset until the approved company name is resolved. An unset value produces an error-level structured log and is omitted rather than guessed.
+`windows_material` and `jornaya_lead_id` are omitted. `offer_id` is omitted when empty. The exact rendered TCPA disclosure is keyed by page in `api/_lib/config.js`. A missing page key produces an error-level structured log and quarantines delivery before SIO is called.
 
 ## Tests
 

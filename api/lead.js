@@ -118,7 +118,7 @@ function createHandler(dependencies = {}) {
       });
     }
 
-    const config = getConfig(env);
+    const config = dependencies.config || getConfig(env);
     if (!originAllowed(req, config.allowedOrigins)) {
       return sendJson(res, 403, {
         success: false,
@@ -220,7 +220,7 @@ function createHandler(dependencies = {}) {
         transition(
           STATES.TF_RETAINED,
           "sio",
-          { warning: "tcpa_consent_text_unset_omitted", page: lead.page },
+          { error: "tcpa_consent_text_missing", page: lead.page },
           "error"
         );
       }

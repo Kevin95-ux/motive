@@ -64,12 +64,14 @@ function mapSioLead(lead, config) {
     landing_page_url: requiredString(lead.page_url, "landing_page_url"),
     originally_created: requiredString(lead.captured_at, "originally_created"),
     source_id: requiredString(lead.subID1 || config.sourceIdFallback, "source_id"),
+    tcpa_consent_text: requiredString(
+      config.tcpaConsentTextByPage[lead.page],
+      "tcpa_consent_text"
+    ),
     trusted_form_cert_url: requiredString(lead.cert, "trusted_form_cert_url"),
     user_agent: requiredString(lead.user_agent, "user_agent")
   };
   if (lead.selected_offer_id) meta.offer_id = lead.selected_offer_id;
-  const consentText = config.tcpaConsentTextByPage[lead.page];
-  if (consentText) meta.tcpa_consent_text = consentText;
 
   return {
     data: {

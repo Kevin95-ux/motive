@@ -3,6 +3,7 @@
 const assert = require("node:assert/strict");
 const test = require("node:test");
 const { createHandler } = require("../api/lead");
+const { FIXED_SIO, getConfig } = require("../api/_lib/config");
 const { request, responseRecorder, validLead } = require("./helpers");
 
 const env = {
@@ -59,10 +60,10 @@ test("verified capture returns success even when SIO denies and GHL fails", asyn
   assert.equal(sioPayload.contact.phone, "2125550123");
   assert.equal(sioPayload.data.windows_num_windows, 6);
   assert.equal("windows_material" in sioPayload.data, false);
-  assert.equal("tcpa_consent_text" in sioPayload.meta, false);
+  assert.equal(sioPayload.meta.tcpa_consent_text, FIXED_SIO.tcpaConsentTextByPage.index);
 });
 
-test("SIO success captures price/confirmation and loudly logs omitted TCPA text", async () => {
+test("SIO success captures price and confirmation", async () => {
   const errors = [];
   const fetchImpl = async (url) => {
     if (String(url).startsWith("https://cert.trustedform.com/")) {
@@ -96,7 +97,45 @@ test("SIO success captures price/confirmation and loudly logs omitted TCPA text"
     price: 37.5,
     confirmation_id: "confirmation-123"
   });
-  assert.equal(errors.some((entry) => entry.includes("tcpa_consent_text_unset_omitted")), true);
+  assert.equal(errors.some((entry) => entry.includes("tcpa_consent_text_missing")), false);
+});
+
+test("missing page TCPA text logs loudly and quarantines before SIO", async () => {
+  const errors = [];
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(String(url));
+    if (String(url).startsWith("https://cert.trustedform.com/")) {
+      return new Response(JSON.stringify({
+        outcome: "success",
+        retain: { results: [{}] },
+        match_lead: { result: { success: true } }
+      }), { status: 200, headers: { "content-type": "application/json" } });
+    }
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  };
+  const config = getConfig(env);
+  config.sio = {
+    ...config.sio,
+    tcpaConsentTextByPage: {
+      index: "",
+      partner: config.sio.tcpaConsentTextByPage.partner
+    }
+  };
+  const handler = createHandler({
+    config,
+    env,
+    fetchImpl,
+    zipAllowlist: new Set(["12207"]),
+    logger: { log() {}, warn() {}, error(message) { errors.push(message); } }
+  });
+  const res = responseRecorder();
+  await handler(request({ normalized_lead: validLead() }), res);
+  const body = JSON.parse(res.body);
+  assert.equal(res.statusCode, 200);
+  assert.equal(body.delivery.sio, "QUARANTINE");
+  assert.equal(errors.some((entry) => entry.includes("tcpa_consent_text_missing")), true);
+  assert.equal(calls.some((url) => url.startsWith("https://exchange.standardinformation.test/")), false);
 });
 
 test("TrustedForm failure prevents SIO and GHL delivery", async () => {

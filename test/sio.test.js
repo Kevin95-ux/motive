@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const test = require("node:test");
 const { FIXED_SIO } = require("../api/_lib/config");
 const {
@@ -21,6 +22,33 @@ function normalized(overrides = {}) {
   });
 }
 
+function renderedDisclosure(file, inputId) {
+  const html = fs.readFileSync(file, "utf8");
+  const match = html.match(
+    new RegExp(`<label\\s+for=["']${inputId}["'][^>]*>([\\s\\S]*?)<\\/label>`, "i")
+  );
+  assert.ok(match, `Consent label ${inputId} must exist in ${file}`);
+  return match[1]
+    .replace(/<span[^>]*>[\s\S]*?<\/span>/gi, "Motiv Brands Group, LLC. DBA Window Motiv")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, "\"")
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+test("TCPA constants exactly match the rendered disclosures", () => {
+  assert.equal(
+    FIXED_SIO.tcpaConsentTextByPage.index,
+    renderedDisclosure("index.html", "wp-consent")
+  );
+  assert.equal(
+    FIXED_SIO.tcpaConsentTextByPage.partner,
+    renderedDisclosure("Partner.html", "wp-offer-consent")
+  );
+});
+
 test("SIO payload has the exact nested shape and omits unavailable optional fields", () => {
   const payload = mapSioLead(normalized(), FIXED_SIO);
   assert.deepEqual(payload, {
@@ -33,6 +61,7 @@ test("SIO payload has the exact nested shape and omits unavailable optional fiel
       landing_page_url: "https://staging.example.test/",
       originally_created: "2026-09-01T12:34:56.000Z",
       source_id: "Motiv",
+      tcpa_consent_text: FIXED_SIO.tcpaConsentTextByPage.index,
       trusted_form_cert_url: validLead().cert,
       user_agent: "consumer-agent"
     },
@@ -51,22 +80,17 @@ test("SIO payload has the exact nested shape and omits unavailable optional fiel
   assert.equal("windows_material" in payload.data, false);
   assert.equal("jornaya_lead_id" in payload.meta, false);
   assert.equal("offer_id" in payload.meta, false);
-  assert.equal("tcpa_consent_text" in payload.meta, false);
 });
 
-test("SIO includes source, offer, and approved TCPA text only when available", () => {
-  const config = {
-    ...FIXED_SIO,
-    tcpaConsentTextByPage: { index: "Approved index disclosure", partner: "Approved partner disclosure" }
-  };
+test("SIO includes source, offer, and the page-specific TCPA text", () => {
   const payload = mapSioLead(normalized({
     page_name: "our_partner_offers",
     selected_offer_id: "offer-123",
     subID1: "source-123"
-  }), config);
+  }), FIXED_SIO);
   assert.equal(payload.meta.source_id, "source-123");
   assert.equal(payload.meta.offer_id, "offer-123");
-  assert.equal(payload.meta.tcpa_consent_text, "Approved partner disclosure");
+  assert.equal(payload.meta.tcpa_consent_text, FIXED_SIO.tcpaConsentTextByPage.partner);
 });
 
 test("ownership and project guards reject unexpected future values", () => {
@@ -89,6 +113,13 @@ test("SIO mapping quarantines missing required metadata before posting", () => {
   assert.throws(
     () => mapSioLead(normalized({ landing_page_url: "" }), FIXED_SIO),
     (error) => error.code === "missing_landing_page_url"
+  );
+  assert.throws(
+    () => mapSioLead(normalized(), {
+      ...FIXED_SIO,
+      tcpaConsentTextByPage: { index: "", partner: FIXED_SIO.tcpaConsentTextByPage.partner }
+    }),
+    (error) => error.code === "missing_tcpa_consent_text"
   );
 });
 
