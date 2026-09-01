@@ -1,0 +1,12 @@
+{
+  "name": "windowmotiv-champion-staging",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Champion Windows lead capture and delivery pipeline",
+  "scripts": {
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

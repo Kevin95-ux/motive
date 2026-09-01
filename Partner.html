@@ -5951,7 +5951,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
           "REPLACE_WITH_O_AND_O_COMPANY_NAME",
 
         SECURE_ROUTER_URL:
-          "REPLACE_WITH_SECURE_ROUTER_URL",
+          "/api/lead",
 
         PRIMARY_ZIP_COVERAGE_URL:
           "/data/champion_zip_coverage_normalized.csv",
@@ -7016,6 +7016,15 @@ eligibility, window-count requirements, offer routing, and partner preference.
           primary_zip_qualified:
             raw.primary_zip_qualified ===
             "true",
+
+          consent_checkbox_checked:
+            raw.consent === "yes",
+
+          company_website:
+            sanitize(
+              raw.company_website,
+              200
+            ),
 
           buyer_route:
             sanitize(raw.buyer_route, 120),

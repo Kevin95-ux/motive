@@ -5764,7 +5764,7 @@ inside this browser code. Those must remain in the secure server-side router.
         ENABLED: true,
         MODE: "crm_plus_selected_buyer",
         SECURE_ROUTER_URL:
-          "REPLACE_WITH_SECURE_ROUTER_URL",
+          "/api/lead",
         REQUEST_TIMEOUT_MS: 15000,
 
         ENDPOINT_A: Object.freeze({
@@ -6956,6 +6956,15 @@ inside this browser code. Those must remain in the secure server-side router.
             raw.primary_zip_qualified ===
             "true",
 
+          consent_checkbox_checked:
+            raw.consent === "yes",
+
+          company_website:
+            sanitize(
+              raw.company_website,
+              200
+            ),
+
           trustedform_cert_url:
             sanitize(
               raw.Cert ||
@@ -7267,10 +7276,10 @@ inside this browser code. Those must remain in the secure server-side router.
           email:
             lead.email,
 
-          phone:
+          phone_primary:
             lead.phone_primary,
 
-          address:
+          address1:
             lead.address1,
 
           city:
@@ -7279,7 +7288,7 @@ inside this browser code. Those must remain in the secure server-side router.
           state:
             lead.state,
 
-          zip:
+          postal_code:
             lead.postal_code,
 
           project_type:
