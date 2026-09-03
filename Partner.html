@@ -101,6 +101,10 @@ The same header on the home page detects open_survey=1 and opens the survey.
 
   gtag('config', 'G-XN16LGMPYV');
 </script>
+<!-- Window Motiv favicon. Pages are head-less fragments, so /favicon.ico at the
+     site root is the reliable path; these links are honoured where supported. -->
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <header id="wm-global-header" class="wm-global-header" data-wm-header-version="V1.0.4">
   <style>
     #wm-global-header {
@@ -168,6 +172,69 @@ The same header on the home page detects open_survey=1 and opens the survey.
 
     :root {
       --wm-header-offset: 5.7rem;
+    }
+
+    /* Site-wide header cleanup (Partner Page Update, applied to every page):
+       no site menu, no phone line. The brand mark and the project CTA remain.
+       Hidden rather than removed because the header script binds to them. */
+    #wm-global-header .wm-header-nav,
+    #wm-global-header .wm-header-call,
+    #wm-global-header .wm-header-mobile-call,
+    #wm-global-header .wm-header-menu-toggle,
+    #wm-global-header .wm-header-mobile-panel {
+      display: none !important;
+    }
+
+    /* With the drawer gone, keep the project CTA reachable on small screens. */
+    @media (max-width: 68rem) {
+      #wm-global-header .wm-header-project-cta {
+        display: inline-flex !important;
+      }
+    }
+
+    #wm-global-header .wm-header-project-cta__short {
+      display: none;
+    }
+
+    /* Phone widths: brand wordmark and CTA share one row. !important because the header's own responsive rules come later in the sheet. The tagline is the
+       widest part of the brand block, so it goes; the CTA uses its short
+       label; the wordmark steps down a size. */
+    @media (max-width: 34rem) {
+      #wm-global-header .wm-header-brand-tagline,
+      #wm-global-header .wm-header-project-cta__long,
+      #wm-global-header .wm-header-project-cta svg {
+        display: none;
+      }
+
+      #wm-global-header .wm-header-project-cta__short {
+        display: inline;
+      }
+
+      #wm-global-header .wm-header-brand-name {
+        font-size: 1.1rem !important;
+      }
+
+      #wm-global-header .wm-header-project-cta {
+        padding-inline: 0.8rem !important;
+        font-size: 0.8125rem !important;
+      }
+    }
+
+    /* Narrowest phones: the logo tile always stays. Make room by stepping the
+       wordmark and the CTA padding down once more instead. */
+    @media (max-width: 22rem) {
+      #wm-global-header .wm-header-brand-name {
+        font-size: 0.95rem !important;
+      }
+
+      #wm-global-header .wm-header-brand {
+        gap: 0.5rem !important;
+      }
+
+      #wm-global-header .wm-header-project-cta {
+        padding-inline: 0.6rem !important;
+        font-size: 0.75rem !important;
+      }
     }
 
     /* A page modal owns the viewport, so the navbar gets out of the way.
@@ -1171,7 +1238,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
           <button class="wm-header-project-cta js-wp-open-form" type="button" data-wm-header-survey-trigger
             data-cta-page="global-header" data-cta-section="desktop-navigation" data-cta-name="start-my-project"
             aria-label="Open the WindowMotiv project survey">
-            Start My Project
+            <span class="wm-header-project-cta__long">Start My Project</span><span class="wm-header-project-cta__short">Start Project</span>
 
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -2324,11 +2391,34 @@ The same header on the home page detects open_survey=1 and opens the survey.
 <!--
 ==============================================================================
 OUR PARTNER OFFERS — WINDOW LEAD-CAPTURE PAGE BODY
-VERSION: V1.1.1
+VERSION: V1.2.0
 RELEASE DATE: 2026-07-29
 
 CHANGE LOG
 ------------------------------------------------------------------------------
+V1.2.0 | 2026-09-04
+- Window Motiv Partner Page Update (Champion Windows campaign):
+  • Site menu and phone line hidden on this page; brand mark and project CTA
+    stay. Page-scoped CSS, the shared header is untouched.
+  • Offer cards relabelled Offer 1 / 2 / 3. "Participating Partner A" no
+    longer appears anywhere visible; partner_display still carries it for
+    routing.
+  • Form step 1 is now the offer choice, using the card headlines verbatim,
+    preselected from the card that opened the form. Changing it updates the
+    tracked selected_offer_* fields.
+  • The direct-match preference question is gone. partner_match_preference is
+    now a hidden field fixed to a direct request, so routing and the buyer
+    payload keep their shape.
+  • Steps merged 5 -> 4: consent checkbox and submit sit under name, email,
+    and phone.
+  • Visible "Selected offer" banner and provider-preference summary removed.
+  • Match-preference explainer section and its two FAQs removed; hero, intro,
+    process, offers, and closing copy reworded around the offers.
+  • Affiliate directory links hidden in this page's footer; the Marketing
+    Partners disclosure remains in the footer and in the consent text.
+  • Favicon added site-wide via the shared header (favicon.ico,
+    apple-touch-icon.png at the site root).
+
 V1.1.1 | 2026-07-29
 - Removed all visible offer deadlines, expiration dates, countdown language,
   offer-status badges, expiration FAQs, and deadline disclosures.
@@ -2837,7 +2927,10 @@ eligibility, window-count requirements, offer routing, and partner preference.
       backdrop-filter: blur(0.85rem);
     }
 
-    #wp-offers-page .wp-hero-offer__icon {
+    /* span-qualified: the generic .wp-hero-offer span rule is more specific
+       than a bare class and was forcing this tile to display:block, which
+       disabled place-items and left the glyph top-left. */
+    #wp-offers-page .wp-hero-offer span.wp-hero-offer__icon {
       display: grid;
       width: 3rem;
       height: 3rem;
@@ -2848,7 +2941,12 @@ eligibility, window-count requirements, offer routing, and partner preference.
     }
 
     #wp-offers-page .wp-hero-offer__icon svg {
-      width: 1.55rem;
+      display: block;
+      width: 1.85rem;
+      height: 1.85rem;
+      /* set here, not on the tile: the generic .wp-hero-offer span colour
+         rule is more specific than the tile rule and was washing the glyph out */
+      color: var(--wp-navy-1000);
     }
 
     #wp-offers-page .wp-hero-offer strong {
@@ -4170,7 +4268,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
         <div class="wp-content-limit">
           <div class="wp-hero__content">
             <p class="wp-eyebrow">
-              Participating partner opportunities
+              Current window offers
             </p>
 
             <h1 class="wp-heading" id="wp-offers-hero-title">
@@ -4179,24 +4277,15 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
             <p class="wp-hero__lead">
               Review select product savings and financing opportunities from
-              participating window providers, then choose how you would like
-              your project matched.
+              participating window providers, then select the one that fits
+              your project.
             </p>
 
             <div class="wp-hero-offer">
               <span class="wp-hero-offer__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M4 7h16v12H4V7Z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
-
-                  <path
-                    d="M8 4v6M16 4v6M4 11h16"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                  />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18v15H3V6Z"></path>
+                  <path d="M7 3v5M17 3v5M3 11h18"></path>
                 </svg>
               </span>
 
@@ -4220,7 +4309,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
                 data-cta-name="hero_view_partner_matches"
                 data-cta-section="offers_hero"
                 data-offer-id="all_current_offers"
-                data-offer-name="Available Participating Partner Offers"
+                data-offer-name="Available Window Offers"
                 data-offer-type="multiple_offers"
                 data-minimum-windows="3"
               >
@@ -4260,7 +4349,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
                   />
                 </svg>
 
-                You control your match
+                Your offer carries into the form
               </span>
 
               <span class="wp-hero__proof-item">
@@ -4303,8 +4392,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
               </strong>
 
               <p>
-                Your selected offer and partner preference are carried into
-                the survey automatically.
+                Your selected offer is carried into the form automatically.
               </p>
             </div>
           </div>
@@ -4315,7 +4403,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
             data-cta-name="intro_review_offers"
             data-cta-section="intro_strip"
             data-offer-id="all_current_offers"
-            data-offer-name="Available Participating Partner Offers"
+            data-offer-name="Available Window Offers"
             data-offer-type="multiple_offers"
             data-minimum-windows="3"
           >
@@ -4334,14 +4422,12 @@ eligibility, window-count requirements, offer routing, and partner preference.
           </p>
 
           <h2 class="wp-section-heading">
-            Select an opportunity for your project review
+            Select your offer
           </h2>
 
           <p class="wp-section-copy">
-            Choose the product savings or financing option that interests you
-            most. Before collecting your project details, the survey will ask
-            whether you would like to be matched directly with the associated
-            participating provider.
+            Choose the offer that fits your project. Your selection is carried
+            into the form and confirmed before you submit.
           </p>
 
           <div class="wp-offer-grid">
@@ -4375,7 +4461,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
               <div class="wp-offer-card__body">
                 <span class="wp-offer-card__partner">
-                  Participating Partner A
+                  Offer 1
                 </span>
 
                 <h3 class="wp-offer-card__headline">
@@ -4462,7 +4548,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
               <div class="wp-offer-card__body">
                 <span class="wp-offer-card__partner">
-                  Participating Partner A
+                  Offer 2
                 </span>
 
                 <h3 class="wp-offer-card__headline">
@@ -4546,7 +4632,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
               <div class="wp-offer-card__body">
                 <span class="wp-offer-card__partner">
-                  Participating Partner A
+                  Offer 3
                 </span>
 
                 <h3 class="wp-offer-card__headline">
@@ -4604,78 +4690,6 @@ eligibility, window-count requirements, offer routing, and partner preference.
       </div>
     </section>
 
-    <!-- MATCH PREFERENCE -->
-    <section class="wp-section wp-section--dark">
-      <div class="wp-container">
-        <div class="wp-content-limit wp-match-band">
-          <div class="wp-match-band__content">
-            <p class="wp-eyebrow" style="color:#ccecff">
-              Your preference matters
-            </p>
-
-            <h2 class="wp-section-heading">
-              You decide how your provider match is handled
-            </h2>
-
-            <p class="wp-section-copy">
-              Selecting an offer does not automatically prioritize a provider.
-              The survey asks how you would like the associated partner
-              considered before collecting your project information.
-            </p>
-          </div>
-
-          <article class="wp-match-card">
-            <span class="wp-match-card__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M8.5 12a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM15.5 19a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 0 7Z"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                />
-
-                <path
-                  d="M11 9.5 14 14"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                />
-              </svg>
-            </span>
-
-            <h3>
-              Choose the approach that works for you
-            </h3>
-
-            <ul>
-              <li>
-                Try to match me directly with the selected partner.
-              </li>
-
-              <li>
-                Show me available provider options for my project.
-              </li>
-
-              <li>
-                Do not prioritize the partner associated with this offer.
-              </li>
-            </ul>
-
-            <button
-              class="wp-button wp-button--primary js-wp-open-offer-form"
-              type="button"
-              data-cta-name="direct_match_explanation_start"
-              data-cta-section="direct_match_explanation"
-              data-offer-id="all_current_offers"
-              data-offer-name="Available Participating Partner Offers"
-              data-offer-type="multiple_offers"
-              data-minimum-windows="3"
-            >
-              Choose My Match Preference
-            </button>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <!-- PROCESS -->
     <section class="wp-section">
       <div class="wp-container">
@@ -4709,11 +4723,11 @@ eligibility, window-count requirements, offer routing, and partner preference.
             <article class="wp-process-card">
               <span class="wp-process-card__number">2</span>
 
-              <h3>Set your preference</h3>
+              <h3>Confirm your offer</h3>
 
               <p>
-                Tell us whether you want the associated partner prioritized or
-                would prefer broader provider options.
+                Your selection is carried into the form. Change it there if
+                another offer fits better.
               </p>
             </article>
 
@@ -4763,7 +4777,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
               <p>
                 Complete the short survey to document your offer interest,
-                project scope, provider preference, and location.
+              project scope, and location.
               </p>
 
               <button
@@ -4772,7 +4786,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
                 data-cta-name="offer_faq_start"
                 data-cta-section="offer_faq"
                 data-offer-id="all_current_offers"
-                data-offer-name="Available Participating Partner Offers"
+                data-offer-name="Available Window Offers"
                 data-offer-type="multiple_offers"
                 data-minimum-windows="3"
               >
@@ -4810,74 +4824,6 @@ eligibility, window-count requirements, offer routing, and partner preference.
                       participating provider must confirm location coverage,
                       qualifying products, minimum purchase, combination
                       rules, measurements, pricing, and final written terms.
-                    </p>
-                  </div>
-                </div>
-              </article>
-
-              <article class="wp-faq__item">
-                <button
-                  class="wp-faq__button"
-                  type="button"
-                  aria-expanded="false"
-                  aria-controls="wp-offer-faq-2"
-                >
-                  What does direct partner matching mean?
-
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                      d="M12 5v14M5 12h14"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    />
-                  </svg>
-                </button>
-
-                <div
-                  class="wp-faq__panel"
-                  id="wp-offer-faq-2"
-                  aria-hidden="true"
-                >
-                  <div class="wp-faq__panel-inner">
-                    <p>
-                      When you request a direct match, the routing system may
-                      prioritize the participating provider associated with
-                      the selected offer when your replacement or installation
-                      project meets the applicable campaign requirements.
-                    </p>
-                  </div>
-                </div>
-              </article>
-
-              <article class="wp-faq__item">
-                <button
-                  class="wp-faq__button"
-                  type="button"
-                  aria-expanded="false"
-                  aria-controls="wp-offer-faq-3"
-                >
-                  Can I request other provider options?
-
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                      d="M12 5v14M5 12h14"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    />
-                  </svg>
-                </button>
-
-                <div
-                  class="wp-faq__panel"
-                  id="wp-offer-faq-3"
-                  aria-hidden="true"
-                >
-                  <div class="wp-faq__panel-inner">
-                    <p>
-                      Yes. Choose “Show me my available options” or “Do not
-                      prioritize this partner” in the survey. Your inquiry can
-                      then be evaluated according to project fit, location,
-                      and available provider routing.
                     </p>
                   </div>
                 </div>
@@ -5031,12 +4977,12 @@ eligibility, window-count requirements, offer routing, and partner preference.
         <div class="wp-content-limit wp-final__inner">
           <div>
             <h2>
-              See which participating partner offers may fit your project
+              See which offer fits your project
             </h2>
 
             <p>
-              Select an offer, choose your provider preference, and provide
-              your project details so availability can be evaluated.
+              Select an offer and tell us about your project so availability
+            can be evaluated.
             </p>
           </div>
 
@@ -5046,7 +4992,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
             data-cta-name="final_offer_review"
             data-cta-section="final_cta"
             data-offer-id="all_current_offers"
-            data-offer-name="Available Participating Partner Offers"
+            data-offer-name="Available Window Offers"
             data-offer-type="multiple_offers"
             data-minimum-windows="3"
           >
@@ -5065,7 +5011,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
       data-cta-name="mobile_offer_review"
       data-cta-section="mobile_sticky"
       data-offer-id="all_current_offers"
-      data-offer-name="Available Participating Partner Offers"
+      data-offer-name="Available Window Offers"
       data-offer-type="multiple_offers"
       data-minimum-windows="3"
     >
@@ -5085,11 +5031,11 @@ eligibility, window-count requirements, offer routing, and partner preference.
     <div class="wp-modal__dialog">
       <div class="wp-modal__top">
         <h2 id="wp-offer-form-title">
-          Check your partner-offer options
+          Request your offer
         </h2>
 
         <p>
-          Begin by choosing how you would like your provider match handled.
+          Confirm your offer, then tell us about your project.
         </p>
 
         <button
@@ -5108,37 +5054,16 @@ eligibility, window-count requirements, offer routing, and partner preference.
         </button>
       </div>
 
-      <div
-        class="wp-selected-offer"
-        id="wp-selected-offer"
-        aria-live="polite"
-      >
-        <div class="wp-selected-offer__content">
-          <strong>
-            Selected offer
-          </strong>
-
-          <span id="wp-selected-offer-copy"></span>
-        </div>
-
-        <button
-          class="wp-selected-offer__clear"
-          id="wp-clear-selected-offer"
-          type="button"
-        >
-          Clear
-        </button>
-      </div>
 
       <div id="wp-offer-form-interface">
         <div class="wp-progress">
           <div class="wp-progress__labels">
             <span id="wp-offer-progress-label">
-              Step 1 of 5
+              Step 1 of 4
             </span>
 
             <span id="wp-offer-progress-percent">
-              20%
+              25%
             </span>
           </div>
 
@@ -5228,6 +5153,12 @@ eligibility, window-count requirements, offer routing, and partner preference.
             name="direct_partner_match_requested"
             id="wp-direct-match-requested"
             value="false"
+          >
+          <input
+            type="hidden"
+            name="partner_match_preference"
+            id="wp-partner-match-preference"
+            value="Yes - attempt direct partner match"
           >
 
           <!-- ROUTING -->
@@ -5400,92 +5331,88 @@ eligibility, window-count requirements, offer routing, and partner preference.
           <!-- STEP 1 -->
           <section class="wp-step is-active" data-step="1">
             <h3 class="wp-step__heading">
-              Would you like us to try to match you directly with this
-              participating partner?
+              Which offer are you interested in?
             </h3>
-
             <p class="wp-step__copy">
-              Your choice determines whether this provider is prioritized
-              during the project-matching process.
+              Your selection carries through to your request. You can change
+              it here.
             </p>
-
             <div class="wp-choice-grid wp-choice-grid--single">
               <div class="wp-choice">
                 <input
                   type="radio"
-                  id="wp-match-yes"
-                  name="partner_match_preference"
-                  value="Yes - attempt direct partner match"
+                  id="wp-offer-choice-1"
+                  name="selected_offer_choice"
+                  value="offer_1"
+                  data-offer-id="partner_a_buy_2_get_2"
+                  data-offer-name="Buy 2 Qualifying Windows, Receive 2 Qualifying Windows"
+                  data-offer-type="product_discount"
+                  data-minimum-windows="4"
                   required
                 >
-
-                <label for="wp-match-yes">
+                <label for="wp-offer-choice-1">
                   <span class="wp-choice__text">
                     <strong>
-                      Yes—try to match me directly
+                      Offer 1
                     </strong>
-
                     <span>
-                      Prioritize the participating provider associated with my
-                      selected offer when the project qualifies.
+                      Buy 2 qualifying windows, receive 2 qualifying windows
                     </span>
                   </span>
                 </label>
               </div>
-
               <div class="wp-choice">
                 <input
                   type="radio"
-                  id="wp-match-options"
-                  name="partner_match_preference"
-                  value="Show me available provider options"
+                  id="wp-offer-choice-2"
+                  name="selected_offer_choice"
+                  value="offer_2"
+                  data-offer-id="partner_a_additional_250"
+                  data-offer-name="Additional $250 Off a Qualifying Window Order"
+                  data-offer-type="order_discount"
+                  data-minimum-windows="3"
                   required
                 >
-
-                <label for="wp-match-options">
+                <label for="wp-offer-choice-2">
                   <span class="wp-choice__text">
                     <strong>
-                      Show me my available options
+                      Offer 2
                     </strong>
-
                     <span>
-                      Evaluate my project based on fit, coverage, and available
-                      participating providers.
+                      Additional $250 off a qualifying window order
                     </span>
                   </span>
                 </label>
               </div>
-
               <div class="wp-choice">
                 <input
                   type="radio"
-                  id="wp-match-no"
-                  name="partner_match_preference"
-                  value="No - do not prioritize selected partner"
+                  id="wp-offer-choice-3"
+                  name="selected_offer_choice"
+                  value="offer_3"
+                  data-offer-id="partner_a_deferred_payment"
+                  data-offer-name="Deferred-Payment Financing Option"
+                  data-offer-type="financing"
+                  data-minimum-windows="3"
                   required
                 >
-
-                <label for="wp-match-no">
+                <label for="wp-offer-choice-3">
                   <span class="wp-choice__text">
                     <strong>
-                      No—do not prioritize this partner
+                      Offer 3
                     </strong>
-
                     <span>
-                      Keep my offer interest for context but use available
-                      alternative provider routing.
+                      Deferred-payment financing option
                     </span>
                   </span>
                 </label>
               </div>
             </div>
-
             <div class="wp-direct-match-note">
-              A match request does not guarantee provider acceptance, contact,
-              service availability, financing, pricing, or appointment
-              scheduling.
+              Selecting an offer records your interest. The participating
+              provider confirms eligibility, pricing, combination rules, and
+              final written terms.
             </div>
-
             <div class="wp-form__actions">
               <button
                 class="wp-button wp-button--primary wp-form__next"
@@ -5496,7 +5423,6 @@ eligibility, window-count requirements, offer routing, and partner preference.
               </button>
             </div>
           </section>
-
           <!-- STEP 2 -->
           <section class="wp-step" data-step="2">
             <h3 class="wp-step__heading">
@@ -5818,7 +5744,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
           <!-- STEP 4 -->
           <section class="wp-step" data-step="4">
             <h3 class="wp-step__heading">
-              Where may a participating provider reach you?
+              How can we reach you?
             </h3>
 
             <p class="wp-step__copy">
@@ -5886,35 +5812,6 @@ eligibility, window-count requirements, offer routing, and partner preference.
               </div>
             </div>
 
-            <div class="wp-form__actions">
-              <button
-                class="wp-form__back"
-                type="button"
-                data-wp-offer-previous
-              >
-                Back
-              </button>
-
-              <button
-                class="wp-button wp-button--primary wp-form__next"
-                type="button"
-                data-wp-offer-next
-              >
-                Review Consent
-              </button>
-            </div>
-          </section>
-
-          <!-- STEP 5 -->
-          <section class="wp-step" data-step="5">
-            <h3 class="wp-step__heading">
-              Confirm your request
-            </h3>
-
-            <p class="wp-step__copy">
-              Review the disclosure before submitting your inquiry.
-            </p>
-
             <div class="wp-consent">
               <div class="wp-consent__row">
                 <input
@@ -5955,11 +5852,6 @@ eligibility, window-count requirements, offer routing, and partner preference.
                 </label>
               </div>
             </div>
-
-            <div class="wp-direct-match-note" id="wp-match-summary">
-              Your selected provider preference will appear here.
-            </div>
-
             <div class="wp-form__actions">
               <button
                 class="wp-form__back"
@@ -6020,7 +5912,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
       root.dataset.wpOffersInitialized = "true";
 
       const CONFIG = Object.freeze({
-        VERSION: "V1.1.1",
+        VERSION: "V1.2.0",
 
         COMPANY_NAME:
           "Motiv Brands Group, LLC DBA Window Motiv",
@@ -6070,7 +5962,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
       const state = {
         currentStep: 1,
-        totalSteps: 5,
+        totalSteps: 4,
         selectedOfferId: "",
         selectedOfferName: "",
         selectedOfferType: "",
@@ -6101,11 +5993,26 @@ eligibility, window-count requirements, offer routing, and partner preference.
       const submitButton =
         root.querySelector("#wp-offer-submit-button");
 
-      const selectedOfferBanner =
-        root.querySelector("#wp-selected-offer");
-
-      const selectedOfferCopy =
-        root.querySelector("#wp-selected-offer-copy");
+      const offerChoices =
+        Array.from(
+          root.querySelectorAll(
+            'input[name="selected_offer_choice"]'
+          )
+        );
+      function syncOfferChoice() {
+        offerChoices.forEach((choice) => {
+          choice.checked =
+            choice.dataset.offerId ===
+            state.selectedOfferId;
+        });
+      }
+      offerChoices.forEach((choice) => {
+        choice.addEventListener("change", () => {
+          if (choice.checked) {
+            setSelectedOffer(choice);
+          }
+        });
+      });
 
       function sanitize(value, maxLength = 500) {
         return String(value || "")
@@ -6438,7 +6345,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
         state.selectedOfferName =
           sanitize(
             trigger?.dataset.offerName ||
-            "Available Participating Partner Offers",
+            "Available Window Offers",
             180
           );
 
@@ -6478,12 +6385,8 @@ eligibility, window-count requirements, offer routing, and partner preference.
         ).value =
           String(state.selectedOfferMinimum);
 
-        selectedOfferCopy.textContent =
-          state.selectedOfferName;
-
-        selectedOfferBanner.classList.add(
-          "is-visible"
-        );
+        syncOfferChoice();
+        updateDirectMatchValue();
       }
 
       function clearSelectedOffer() {
@@ -6491,7 +6394,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
           "all_current_offers";
 
         state.selectedOfferName =
-          "Available Participating Partner Offers";
+          "Available Window Offers";
 
         state.selectedOfferType =
           "multiple_offers";
@@ -6519,9 +6422,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
         ).value =
           String(state.selectedOfferMinimum);
 
-        selectedOfferBanner.classList.remove(
-          "is-visible"
-        );
+        syncOfferChoice();
       }
 
       function updateProgress() {
@@ -6571,9 +6472,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
         errorBox.textContent = "";
         errorBox.classList.remove("is-visible");
 
-        if (state.currentStep === 5) {
-          updateMatchSummary();
-        }
+        
 
         updateProgress();
       }
@@ -6694,7 +6593,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
             if (!selected) {
               showError(
                 state.currentStep === 1
-                  ? "Please choose how you would like your provider match handled."
+                  ? "Please select an offer to continue."
                   : "Please select an option before continuing."
               );
 
@@ -6765,7 +6664,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
             state.selectedOfferMinimum > count
           ) {
             showError(
-              `The selected offer requires at least ${state.selectedOfferMinimum} windows. Increase the project count or clear the selected offer.`
+              `The selected offer requires at least ${state.selectedOfferMinimum} windows. Increase the project count or go back and choose a different offer.`
             );
 
             return false;
@@ -6777,8 +6676,8 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
       function updateDirectMatchValue() {
         const preference =
-          form.querySelector(
-            'input[name="partner_match_preference"]:checked'
+          root.querySelector(
+            "#wp-partner-match-preference"
           )?.value || "";
 
         const directRequested =
@@ -6794,31 +6693,6 @@ eligibility, window-count requirements, offer routing, and partner preference.
           preference,
           directRequested
         };
-      }
-
-      function updateMatchSummary() {
-        const {
-          preference,
-          directRequested
-        } =
-          updateDirectMatchValue();
-
-        const summary =
-          root.querySelector("#wp-match-summary");
-
-        if (directRequested) {
-          summary.textContent =
-            `Provider preference: Try to match this project directly with ${CONFIG.PARTNER_DISPLAY} for “${state.selectedOfferName},” subject to project qualification and provider availability.`;
-        } else if (
-          preference ===
-          "No - do not prioritize selected partner"
-        ) {
-          summary.textContent =
-            `Provider preference: Do not prioritize ${CONFIG.PARTNER_DISPLAY}. Evaluate available alternative providers instead.`;
-        } else {
-          summary.textContent =
-            "Provider preference: Show available provider options based on project fit, location, and campaign coverage.";
-        }
       }
 
       function syncTrustedFormCertificate() {
@@ -7491,10 +7365,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
           );
         });
 
-      root
-        .querySelector(
-          "#wp-clear-selected-offer"
-        )
+      document.createElement("button") /* Clear button removed */
         .addEventListener(
           "click",
           clearSelectedOffer
@@ -7746,9 +7617,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
             formInterface.style.display =
               "none";
 
-            selectedOfferBanner.classList.remove(
-              "is-visible"
-            );
+            syncOfferChoice();
 
             const message =
               root.querySelector(
@@ -7951,8 +7820,9 @@ https://cwae.windowmotiv.com/terms-of-service
 
     #wm-global-footer .wmf-primary-inner {
       display: grid;
+      /* brand | Start My Project. The middle menu column is gone. */
       grid-template-columns:
-        minmax(270px, 1.05fr) minmax(0, 1.45fr) auto;
+        minmax(0, 1fr) auto;
       align-items: center;
       gap: clamp(26px, 4vw, 64px);
       padding-top: clamp(30px, 4vw, 48px);
@@ -8379,33 +8249,6 @@ https://cwae.windowmotiv.com/terms-of-service
           </span>
         </a>
 
-        <nav class="wmf-navigation" aria-label="WindowMotiv footer navigation">
-          <a class="wmf-nav-link" href="/" data-wmf-nav-link>
-            Home
-          </a>
-
-          <a class="wmf-nav-link" href="/Partner.html" data-wmf-nav-link>
-            Partner Offers
-          </a>
-
-          <a class="wmf-nav-link" href="/Disclosure.html" data-wmf-nav-link>
-            Affiliates
-          </a>
-
-
-          <a class="wmf-nav-link" href="/disclosures/marketing-partners" data-wmf-nav-link>
-            Marketing Partners
-          </a>
-
-          <a class="wmf-nav-link" href="/privacy-policy" data-wmf-nav-link>
-            Privacy
-          </a>
-
-          <a class="wmf-nav-link" href="/terms-of-use" data-wmf-nav-link>
-            Terms
-          </a>
-        </nav>
-
         <button class="wmf-survey-button" type="button" data-wmf-survey-trigger data-cta-page="global-footer"
           data-cta-section="compact-footer" data-cta-name="start-my-project"
           aria-label="Open the WindowMotiv project survey">
@@ -8446,10 +8289,6 @@ https://cwae.windowmotiv.com/terms-of-service
 
             <a class="wmf-legal-link" href="/terms-of-use" data-wmf-nav-link>
               Terms of Use
-            </a>
-
-            <a class="wmf-legal-link" href="/Disclosure.html" data-wmf-nav-link>
-              Affiliate Disclosure
             </a>
 
             <a class="wmf-legal-link" href="/disclosures/marketing-partners" data-wmf-nav-link>
