@@ -1,0 +1,3789 @@
+<!--
+==============================================================================
+WINDOWMOTIV GLOBAL SITE HEADER
+VERSION: V1.0.4
+RELEASE DATE: 2026-07-31
+
+CHANGE LOG
+------------------------------------------------------------------------------
+V1.0.4 | 2026-08-01
+- Matched the header project CTA to the native survey form used on the
+  WindowMotiv home page.
+- Added direct compatibility with .js-wp-open-form and #wp-lead-modal.
+- Preserved header CTA attribution when opening the page-level survey.
+- Updated automatic open_survey=1 handling for the native page survey.
+
+V1.0.3 | 2026-08-01
+- Injected the approved WindowMotiv public phone number: 1-855-524-1346.
+- Updated all desktop, mobile-header, and mobile-drawer telephone links to
+  use +18555241346.
+- Updated visible phone text and accessibility labels globally.
+
+V1.0.2 | 2026-07-31
+- Converted every "Start My Project" header CTA from a standard link into a
+  survey-form trigger.
+- Added a standardized WindowMotiv survey event:
+  windowmotiv:open-survey
+- Added compatibility with existing survey buttons, popup modals, custom
+  functions, and page-level survey scripts.
+- Added fallback routing to the WindowMotiv home page with open_survey=1 when
+  a page does not contain the survey markup.
+- Added page, section, CTA, and referring-path attribution to every survey
+  opening request.
+- Added automatic support for opening the survey when a page loads with:
+  ?open_survey=1
+- Prevented duplicate survey-trigger clicks and recursive header activation.
+- Preserved desktop navigation, mobile navigation, Legal dropdown, phone CTA,
+  sticky behavior, accessibility, responsive behavior, and active-page states.
+
+V1.0.1 | 2026-07-31
+- Integrated approved WindowMotiv navigation links.
+- Added Partner Offers, Affiliates, Privacy Policy, and Terms of Service.
+- Grouped Privacy Policy and Terms of Service under Legal.
+- Added desktop and mobile Legal navigation.
+- Refined narrow-screen mobile behavior.
+
+V1.0.0 | 2026-07-31
+- Created the initial WindowMotiv global website header.
+- Added desktop navigation, mobile drawer, call CTA, project CTA, sticky
+  behavior, accessibility support, and responsive styling.
+
+STANDARD SURVEY INTEGRATION
+------------------------------------------------------------------------------
+The header first dispatches:
+
+window.addEventListener("windowmotiv:open-survey", function (event) {
+  // Open the page's survey modal here if needed.
+});
+
+The header also automatically detects common survey triggers and modals.
+
+Supported trigger examples:
+.js-wp-open-form
+[data-wm-open-survey]
+[data-windowmotiv-open-survey]
+[data-open-survey]
+[data-survey-trigger]
+.wm-open-survey
+.windowmotiv-open-survey
+#wm-open-survey
+
+Supported modal examples:
+#wp-lead-modal
+.wp-modal
+[data-wm-survey-modal]
+[data-windowmotiv-survey-modal]
+#wm-survey-modal
+#windowmotiv-survey-modal
+.wm-survey-modal
+
+Supported global functions:
+window.openWindowMotivSurvey()
+window.openWMSurvey()
+window.WindowMotivSurvey.open()
+window.WM_SURVEY.open()
+
+FALLBACK
+------------------------------------------------------------------------------
+If no survey implementation exists on the current page, the visitor is sent to:
+
+/?open_survey=1
+
+The same header on the home page detects open_survey=1 and opens the survey.
+==============================================================================
+-->
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XN16LGMPYV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XN16LGMPYV');
+</script>
+<header id="wm-global-header" class="wm-global-header" data-wm-header-version="V1.0.4">
+  <style>
+    #wm-global-header {
+      --wm-navy-1000: #00182e;
+      --wm-navy-950: #002647;
+      --wm-navy-900: #003b71;
+      --wm-blue-800: #005293;
+      --wm-blue-700: #005baa;
+      --wm-blue-600: #1686ce;
+      --wm-blue-500: #3aa7df;
+      --wm-blue-100: #dceff9;
+      --wm-blue-050: #f1f8fc;
+      --wm-orange-700: #bd4b18;
+      --wm-orange-600: #dd5d20;
+      --wm-orange-500: #f47a38;
+      --wm-white: #ffffff;
+      --wm-ink: #102538;
+      --wm-muted: #5d7284;
+      --wm-line: #d6e3ec;
+      --wm-shadow: 0 1rem 3rem rgba(0, 31, 58, 0.12);
+      --wm-shadow-strong: 0 1.35rem 3.8rem rgba(0, 31, 58, 0.2);
+      --wm-focus: 0 0 0 0.25rem rgba(22, 134, 206, 0.24);
+      --wm-transition: 180ms ease;
+
+      position: relative;
+      z-index: 99990;
+      width: 100%;
+      min-width: 0;
+      color: var(--wm-ink);
+      font-family:
+        Inter,
+        ui-sans-serif,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #wm-global-header,
+    #wm-global-header *,
+    #wm-global-header *::before,
+    #wm-global-header *::after {
+      box-sizing: border-box;
+    }
+
+    #wm-global-header button,
+    #wm-global-header a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #wm-global-header button {
+      font: inherit;
+    }
+
+    #wm-global-header a {
+      text-decoration: none;
+    }
+
+    #wm-global-header svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    :root {
+      --wm-header-offset: 5.7rem;
+    }
+
+    /* A page modal owns the viewport, so the navbar gets out of the way.
+       Hidden rather than merely lowered: the shell's backdrop-filter is
+       composited into its own layer that outpaints the dialog regardless of
+       z-index. */
+    body.wp-modal-open #wm-global-header,
+    body:has(.wp-modal[aria-hidden="false"]) #wm-global-header {
+      z-index: 1;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #wm-global-header .wm-header-spacer {
+      display: none;
+    }
+
+    #wm-global-header.is-sticky .wm-header-spacer {
+      display: block;
+    }
+
+    #wm-global-header .wm-header-shell {
+      position: relative;
+      width: 100%;
+      border-bottom: 0.0625rem solid rgba(0, 59, 113, 0.1);
+      background:
+        linear-gradient(180deg,
+          rgba(255, 255, 255, 0.99),
+          rgba(255, 255, 255, 0.96));
+      box-shadow: 0 0.35rem 1.5rem rgba(0, 31, 58, 0.06);
+      backdrop-filter: blur(1rem);
+      transition:
+        box-shadow var(--wm-transition),
+        background var(--wm-transition),
+        border-color var(--wm-transition);
+    }
+
+    #wm-global-header.is-sticky .wm-header-shell {
+      position: fixed;
+      inset: 0 0 auto;
+    }
+
+    #wm-global-header.is-scrolled .wm-header-shell {
+      border-bottom-color: rgba(0, 59, 113, 0.17);
+      background: rgba(255, 255, 255, 0.975);
+      box-shadow: var(--wm-shadow);
+    }
+
+    #wm-global-header .wm-header-topline {
+      width: 100%;
+      min-height: 0.28rem;
+      background:
+        linear-gradient(90deg,
+          var(--wm-navy-900),
+          var(--wm-blue-600) 62%,
+          var(--wm-orange-500));
+    }
+
+    #wm-global-header .wm-header-container {
+      width: min(100%, 106rem);
+      margin-inline: auto;
+      padding-inline:
+        max(env(safe-area-inset-left),
+          clamp(1rem, 3.8vw, 4rem)) max(env(safe-area-inset-right),
+          clamp(1rem, 3.8vw, 4rem));
+    }
+
+    #wm-global-header .wm-header-inner {
+      display: grid;
+      grid-template-columns:
+        auto minmax(0, 1fr) auto;
+      min-height: 5.4rem;
+      align-items: center;
+      gap: clamp(1rem, 2.5vw, 2.4rem);
+    }
+
+    #wm-global-header .wm-header-brand {
+      display: inline-flex;
+      min-width: 0;
+      align-items: center;
+      gap: 0.78rem;
+      border-radius: 0.85rem;
+      color: var(--wm-navy-1000);
+    }
+
+    #wm-global-header .wm-header-brand:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-logo {
+      position: relative;
+      display: grid;
+      width: 3.25rem;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 0.95rem;
+      color: var(--wm-white);
+      background:
+        radial-gradient(circle at 78% 18%,
+          rgba(255, 255, 255, 0.25),
+          transparent 29%),
+        linear-gradient(145deg,
+          var(--wm-navy-900),
+          var(--wm-blue-600));
+      box-shadow: 0 0.65rem 1.6rem rgba(0, 72, 132, 0.2);
+    }
+
+    #wm-global-header .wm-header-logo::after {
+      position: absolute;
+      right: -0.35rem;
+      bottom: -0.35rem;
+      width: 1.2rem;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--wm-orange-500);
+      content: "";
+    }
+
+    #wm-global-header .wm-header-logo svg {
+      position: relative;
+      z-index: 1;
+      width: 1.75rem;
+    }
+
+    #wm-global-header .wm-header-brand-copy {
+      display: grid;
+      min-width: 0;
+      gap: 0.05rem;
+    }
+
+    #wm-global-header .wm-header-brand-name {
+      color: var(--wm-navy-1000);
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+      font-size: clamp(1.45rem, 2vw, 1.85rem);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      white-space: nowrap;
+    }
+
+    #wm-global-header .wm-header-brand-name strong {
+      color: var(--wm-orange-600);
+      font-weight: inherit;
+    }
+
+    #wm-global-header .wm-header-brand-tagline {
+      color: var(--wm-muted);
+      font-size: 0.64rem;
+      font-weight: 850;
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    #wm-global-header .wm-header-nav {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #wm-global-header .wm-header-nav-list {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(0.15rem, 0.7vw, 0.65rem);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    #wm-global-header .wm-header-nav-item {
+      position: relative;
+    }
+
+    #wm-global-header .wm-header-nav-link,
+    #wm-global-header .wm-header-dropdown-toggle {
+      position: relative;
+      display: inline-flex;
+      min-height: 2.9rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.42rem;
+      padding:
+        0.65rem clamp(0.65rem, 1vw, 1rem);
+      border: 0;
+      border-radius: 0.7rem;
+      cursor: pointer;
+      color: var(--wm-ink);
+      background: transparent;
+      font-size: clamp(0.76rem, 0.85vw, 0.88rem);
+      font-weight: 850;
+      line-height: 1.2;
+      white-space: nowrap;
+      transition:
+        color var(--wm-transition),
+        background var(--wm-transition),
+        transform var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-nav-link::after,
+    #wm-global-header .wm-header-dropdown-toggle::after {
+      position: absolute;
+      right: 0.75rem;
+      bottom: 0.4rem;
+      left: 0.75rem;
+      height: 0.14rem;
+      border-radius: 999rem;
+      background:
+        linear-gradient(90deg,
+          var(--wm-blue-600),
+          var(--wm-orange-500));
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--wm-transition);
+      content: "";
+    }
+
+    #wm-global-header .wm-header-nav-link:hover,
+    #wm-global-header .wm-header-nav-link.is-active,
+    #wm-global-header .wm-header-dropdown-toggle:hover,
+    #wm-global-header .wm-header-dropdown-toggle.is-active,
+    #wm-global-header .wm-header-dropdown-toggle[aria-expanded="true"] {
+      color: var(--wm-blue-700);
+      background: var(--wm-blue-050);
+      transform: translateY(-0.06rem);
+    }
+
+    #wm-global-header .wm-header-nav-link:hover::after,
+    #wm-global-header .wm-header-nav-link.is-active::after,
+    #wm-global-header .wm-header-dropdown-toggle:hover::after,
+    #wm-global-header .wm-header-dropdown-toggle.is-active::after,
+    #wm-global-header .wm-header-dropdown-toggle[aria-expanded="true"]::after {
+      transform: scaleX(1);
+    }
+
+    #wm-global-header .wm-header-nav-link:focus-visible,
+    #wm-global-header .wm-header-dropdown-toggle:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-dropdown-toggle svg {
+      width: 0.85rem;
+      transition: transform var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-dropdown-toggle[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+    #wm-global-header .wm-header-dropdown {
+      position: absolute;
+      z-index: 100;
+      top: calc(100% + 0.7rem);
+      right: 0;
+      width: 15.5rem;
+      padding: 0.55rem;
+      border: 0.0625rem solid rgba(0, 59, 113, 0.13);
+      border-radius: 1rem;
+      visibility: hidden;
+      opacity: 0;
+      background: rgba(255, 255, 255, 0.99);
+      box-shadow: var(--wm-shadow-strong);
+      transform: translateY(-0.4rem);
+      transition:
+        opacity var(--wm-transition),
+        transform var(--wm-transition),
+        visibility var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-dropdown.is-open {
+      visibility: visible;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #wm-global-header .wm-header-dropdown::before {
+      position: absolute;
+      top: -0.42rem;
+      right: 1.4rem;
+      width: 0.8rem;
+      aspect-ratio: 1;
+      border-top: 0.0625rem solid rgba(0, 59, 113, 0.13);
+      border-left: 0.0625rem solid rgba(0, 59, 113, 0.13);
+      background: var(--wm-white);
+      transform: rotate(45deg);
+      content: "";
+    }
+
+    #wm-global-header .wm-header-dropdown-link {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      min-height: 3.15rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      padding: 0.75rem 0.8rem;
+      border-radius: 0.72rem;
+      color: var(--wm-navy-900);
+      font-size: 0.82rem;
+      font-weight: 850;
+      transition:
+        color var(--wm-transition),
+        background var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-dropdown-link:hover,
+    #wm-global-header .wm-header-dropdown-link.is-active {
+      color: var(--wm-blue-700);
+      background: var(--wm-blue-050);
+    }
+
+    #wm-global-header .wm-header-dropdown-link:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-dropdown-link svg {
+      width: 0.95rem;
+      color: var(--wm-orange-600);
+    }
+
+    #wm-global-header .wm-header-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.72rem;
+    }
+
+    #wm-global-header .wm-header-call {
+      display: inline-flex;
+      min-height: 3.25rem;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 0.9rem;
+      border: 0.0625rem solid rgba(0, 91, 170, 0.2);
+      border-radius: 0.85rem;
+      color: var(--wm-navy-900);
+      background: var(--wm-blue-050);
+      transition:
+        transform var(--wm-transition),
+        border-color var(--wm-transition),
+        background var(--wm-transition),
+        box-shadow var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-call:hover {
+      transform: translateY(-0.1rem);
+      border-color: rgba(0, 91, 170, 0.4);
+      color: var(--wm-navy-900);
+      background: var(--wm-blue-100);
+      box-shadow: 0 0.65rem 1.5rem rgba(0, 91, 170, 0.12);
+    }
+
+    #wm-global-header .wm-header-call:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-call-icon {
+      display: grid;
+      width: 2.15rem;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 0.65rem;
+      color: var(--wm-white);
+      background:
+        linear-gradient(145deg,
+          var(--wm-blue-700),
+          var(--wm-blue-600));
+    }
+
+    #wm-global-header .wm-header-call-icon svg {
+      width: 1.05rem;
+    }
+
+    #wm-global-header .wm-header-call-copy {
+      display: grid;
+      gap: 0.02rem;
+    }
+
+    #wm-global-header .wm-header-call-label {
+      color: var(--wm-muted);
+      font-size: 0.59rem;
+      font-weight: 900;
+      letter-spacing: 0.065em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    #wm-global-header .wm-header-call-number {
+      color: var(--wm-navy-900);
+      font-size: 0.82rem;
+      font-weight: 950;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    #wm-global-header .wm-header-project-cta {
+      display: inline-flex;
+      min-height: 3.25rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      padding: 0.75rem 1.05rem;
+      border: 0.0625rem solid transparent;
+      border-radius: 0.85rem;
+      cursor: pointer;
+      color: var(--wm-white);
+      background:
+        linear-gradient(135deg,
+          var(--wm-orange-600),
+          var(--wm-orange-500));
+      box-shadow: 0 0.75rem 1.75rem rgba(201, 79, 23, 0.25);
+      font-size: 0.8rem;
+      font-weight: 950;
+      line-height: 1.15;
+      white-space: nowrap;
+      transition:
+        transform var(--wm-transition),
+        box-shadow var(--wm-transition),
+        background var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-project-cta:hover {
+      transform: translateY(-0.1rem);
+      color: var(--wm-white);
+      background:
+        linear-gradient(135deg,
+          var(--wm-orange-700),
+          var(--wm-orange-600));
+      box-shadow: 0 1rem 2.25rem rgba(201, 79, 23, 0.32);
+    }
+
+    #wm-global-header .wm-header-project-cta:focus-visible {
+      outline: none;
+      box-shadow:
+        var(--wm-focus),
+        0 0.75rem 1.75rem rgba(201, 79, 23, 0.25);
+    }
+
+    #wm-global-header .wm-header-project-cta svg {
+      width: 1rem;
+      flex: 0 0 auto;
+    }
+
+    #wm-global-header .wm-header-mobile-call,
+    #wm-global-header .wm-header-menu-toggle {
+      display: none;
+    }
+
+    #wm-global-header .wm-header-mobile-call {
+      width: 2.85rem;
+      aspect-ratio: 1;
+      align-items: center;
+      justify-content: center;
+      border: 0.0625rem solid rgba(0, 91, 170, 0.22);
+      border-radius: 0.78rem;
+      color: var(--wm-blue-700);
+      background: var(--wm-blue-050);
+    }
+
+    #wm-global-header .wm-header-mobile-call svg {
+      width: 1.25rem;
+    }
+
+    #wm-global-header .wm-header-menu-toggle {
+      position: relative;
+      width: 2.85rem;
+      aspect-ratio: 1;
+      align-items: center;
+      justify-content: center;
+      border: 0.0625rem solid var(--wm-line);
+      border-radius: 0.78rem;
+      cursor: pointer;
+      color: var(--wm-navy-900);
+      background: var(--wm-white);
+    }
+
+    #wm-global-header .wm-header-mobile-call:focus-visible,
+    #wm-global-header .wm-header-menu-toggle:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-menu-icon {
+      position: relative;
+      width: 1.25rem;
+      height: 0.95rem;
+    }
+
+    #wm-global-header .wm-header-menu-icon span {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 0.13rem;
+      border-radius: 999rem;
+      background: currentColor;
+      transition:
+        top var(--wm-transition),
+        transform var(--wm-transition),
+        opacity var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-menu-icon span:nth-child(1) {
+      top: 0;
+    }
+
+    #wm-global-header .wm-header-menu-icon span:nth-child(2) {
+      top: 0.41rem;
+    }
+
+    #wm-global-header .wm-header-menu-icon span:nth-child(3) {
+      top: 0.82rem;
+    }
+
+    #wm-global-header .wm-header-menu-toggle[aria-expanded="true"] .wm-header-menu-icon span:nth-child(1) {
+      top: 0.41rem;
+      transform: rotate(45deg);
+    }
+
+    #wm-global-header .wm-header-menu-toggle[aria-expanded="true"] .wm-header-menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    #wm-global-header .wm-header-menu-toggle[aria-expanded="true"] .wm-header-menu-icon span:nth-child(3) {
+      top: 0.41rem;
+      transform: rotate(-45deg);
+    }
+
+    #wm-global-header .wm-header-mobile-panel {
+      position: fixed;
+      z-index: 99991;
+      inset: 0;
+      display: none;
+      background: rgba(0, 24, 46, 0.72);
+      backdrop-filter: blur(0.55rem);
+    }
+
+    #wm-global-header .wm-header-mobile-panel.is-open {
+      display: block;
+    }
+
+    #wm-global-header .wm-header-mobile-drawer {
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      width: min(89vw, 25rem);
+      height: 100%;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding:
+        max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) 1rem;
+      background:
+        linear-gradient(180deg,
+          var(--wm-white),
+          var(--wm-blue-050));
+      box-shadow: -1.2rem 0 3.5rem rgba(0, 24, 46, 0.24);
+      transform: translateX(100%);
+      transition: transform 240ms ease;
+    }
+
+    #wm-global-header .wm-header-mobile-panel.is-open .wm-header-mobile-drawer {
+      transform: translateX(0);
+    }
+
+    #wm-global-header .wm-header-mobile-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 0.0625rem solid var(--wm-line);
+    }
+
+    #wm-global-header .wm-header-mobile-close {
+      display: grid;
+      width: 2.75rem;
+      aspect-ratio: 1;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 0.0625rem solid var(--wm-line);
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--wm-navy-900);
+      background: var(--wm-white);
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    #wm-global-header .wm-header-mobile-close:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-mobile-nav {
+      display: grid;
+      gap: 0.35rem;
+      margin-top: 1rem;
+    }
+
+    #wm-global-header .wm-header-mobile-nav-link,
+    #wm-global-header .wm-header-mobile-legal-toggle {
+      display: flex;
+      width: 100%;
+      min-height: 3.35rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 0.9rem;
+      border: 0.0625rem solid transparent;
+      border-radius: 0.8rem;
+      cursor: pointer;
+      color: var(--wm-navy-900);
+      background: transparent;
+      font-size: 0.9rem;
+      font-weight: 900;
+      text-align: left;
+      transition:
+        border-color var(--wm-transition),
+        color var(--wm-transition),
+        background var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-mobile-nav-link:hover,
+    #wm-global-header .wm-header-mobile-nav-link.is-active,
+    #wm-global-header .wm-header-mobile-legal-toggle:hover,
+    #wm-global-header .wm-header-mobile-legal-toggle[aria-expanded="true"] {
+      border-color: rgba(0, 91, 170, 0.14);
+      color: var(--wm-blue-700);
+      background: var(--wm-white);
+    }
+
+    #wm-global-header .wm-header-mobile-nav-link:focus-visible,
+    #wm-global-header .wm-header-mobile-legal-toggle:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-mobile-nav-link svg,
+    #wm-global-header .wm-header-mobile-legal-toggle svg {
+      width: 1rem;
+      color: var(--wm-orange-600);
+    }
+
+    #wm-global-header .wm-header-mobile-legal-toggle svg {
+      transition: transform var(--wm-transition);
+    }
+
+    #wm-global-header .wm-header-mobile-legal-toggle[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+    #wm-global-header .wm-header-mobile-legal-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 220ms ease;
+    }
+
+    #wm-global-header .wm-header-mobile-legal-panel.is-open {
+      grid-template-rows: 1fr;
+    }
+
+    #wm-global-header .wm-header-mobile-legal-inner {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    #wm-global-header .wm-header-mobile-legal-links {
+      display: grid;
+      gap: 0.3rem;
+      padding:
+        0.25rem 0.25rem 0.55rem 1rem;
+    }
+
+    #wm-global-header .wm-header-mobile-legal-link {
+      display: flex;
+      min-height: 3rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+      padding: 0.7rem 0.85rem;
+      border-left: 0.18rem solid var(--wm-blue-100);
+      border-radius:
+        0 0.7rem 0.7rem 0;
+      color: var(--wm-muted);
+      background: rgba(255, 255, 255, 0.72);
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
+    #wm-global-header .wm-header-mobile-legal-link:hover,
+    #wm-global-header .wm-header-mobile-legal-link.is-active {
+      border-left-color: var(--wm-orange-500);
+      color: var(--wm-blue-700);
+      background: var(--wm-white);
+    }
+
+    #wm-global-header .wm-header-mobile-legal-link:focus-visible {
+      outline: none;
+      box-shadow: var(--wm-focus);
+    }
+
+    #wm-global-header .wm-header-mobile-actions {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: auto;
+      padding-top: 1.25rem;
+    }
+
+    #wm-global-header .wm-header-mobile-action {
+      display: flex;
+      width: 100%;
+      min-height: 3.65rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      padding: 0.85rem 1rem;
+      border-radius: 0.85rem;
+      font-size: 0.88rem;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    #wm-global-header button.wm-header-mobile-action {
+      border: 0;
+      cursor: pointer;
+    }
+
+    #wm-global-header .wm-header-mobile-action--call {
+      border: 0.0625rem solid rgba(0, 91, 170, 0.28);
+      color: var(--wm-blue-700);
+      background: var(--wm-white);
+    }
+
+    #wm-global-header .wm-header-mobile-action--project {
+      color: var(--wm-white);
+      background:
+        linear-gradient(135deg,
+          var(--wm-orange-600),
+          var(--wm-orange-500));
+      box-shadow: 0 0.8rem 1.8rem rgba(201, 79, 23, 0.24);
+    }
+
+    #wm-global-header .wm-header-mobile-action svg {
+      width: 1.1rem;
+    }
+
+    #wm-global-header .wm-header-mobile-note {
+      margin: 1rem 0 0;
+      color: var(--wm-muted);
+      font-size: 0.7rem;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    @media (max-width: 78rem) {
+
+      #wm-global-header .wm-header-nav-link,
+      #wm-global-header .wm-header-dropdown-toggle {
+        padding-inline: 0.65rem;
+      }
+
+      #wm-global-header .wm-header-call {
+        padding-inline: 0.7rem;
+      }
+
+      #wm-global-header .wm-header-call-label {
+        display: none;
+      }
+
+      #wm-global-header .wm-header-project-cta {
+        padding-inline: 0.85rem;
+      }
+    }
+
+    @media (max-width: 68rem) {
+      #wm-global-header .wm-header-inner {
+        grid-template-columns:
+          auto 1fr auto;
+        min-height: 4.9rem;
+      }
+
+      #wm-global-header .wm-header-nav,
+      #wm-global-header .wm-header-call,
+      #wm-global-header .wm-header-project-cta {
+        display: none;
+      }
+
+      #wm-global-header .wm-header-actions {
+        gap: 0.55rem;
+      }
+
+      #wm-global-header .wm-header-mobile-call,
+      #wm-global-header .wm-header-menu-toggle {
+        display: inline-flex;
+      }
+    }
+
+    @media (max-width: 34rem) {
+      #wm-global-header .wm-header-inner {
+        min-height: 4.65rem;
+        gap: 0.7rem;
+      }
+
+      #wm-global-header .wm-header-logo {
+        width: 2.85rem;
+      }
+
+      #wm-global-header .wm-header-brand-name {
+        font-size: 1.35rem;
+      }
+
+      #wm-global-header .wm-header-brand-tagline {
+        display: none;
+      }
+
+      #wm-global-header .wm-header-mobile-call,
+      #wm-global-header .wm-header-menu-toggle {
+        width: 2.65rem;
+      }
+    }
+
+    @media (max-width: 24.375rem) {
+      #wm-global-header .wm-header-inner {
+        grid-template-columns:
+          minmax(0, 1fr) auto;
+      }
+
+      #wm-global-header .wm-header-mobile-call {
+        display: none;
+      }
+
+      #wm-global-header .wm-header-brand-name {
+        font-size: 1.2rem;
+      }
+
+      #wm-global-header .wm-header-logo {
+        width: 2.55rem;
+      }
+
+      #wm-global-header .wm-header-menu-toggle {
+        width: 2.55rem;
+      }
+    }
+
+    @media (max-width: 21rem) {
+      #wm-global-header .wm-header-brand-name {
+        font-size: 1.05rem;
+      }
+
+      #wm-global-header .wm-header-logo {
+        width: 2.4rem;
+      }
+
+      #wm-global-header .wm-header-brand {
+        gap: 0.55rem;
+      }
+    }
+
+    @media print {
+      #wm-global-header {
+        display: none !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      #wm-global-header *,
+      #wm-global-header *::before,
+      #wm-global-header *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+
+  <div class="wm-header-spacer" aria-hidden="true"></div>
+
+  <div class="wm-header-shell">
+    <div class="wm-header-topline" aria-hidden="true"></div>
+
+    <div class="wm-header-container">
+      <div class="wm-header-inner">
+        <a class="wm-header-brand" href="/" aria-label="WindowMotiv home"
+          data-wm-nav-link>
+          <span class="wm-header-logo" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="6" y="5" width="20" height="22" rx="1.5" stroke="currentColor" stroke-width="2"></rect>
+
+              <path d="M16 6v20M7 16h18" stroke="currentColor" stroke-width="2"></path>
+
+              <path d="m19.5 20 2.2 2.2 4.2-4.8" stroke="#ff9a62" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+
+          <span class="wm-header-brand-copy">
+            <span class="wm-header-brand-name">
+              Window<strong>Motiv</strong>
+            </span>
+
+            <span class="wm-header-brand-tagline">
+              Smarter window project matching
+            </span>
+          </span>
+        </a>
+
+        <nav class="wm-header-nav" aria-label="WindowMotiv primary navigation">
+          <ul class="wm-header-nav-list">
+            <li class="wm-header-nav-item">
+              <a class="wm-header-nav-link" href="/" data-wm-nav-link>
+                Home
+              </a>
+            </li>
+
+            <li class="wm-header-nav-item">
+              <a class="wm-header-nav-link" href="/Partner.html" data-wm-nav-link>
+                Partner Offers
+              </a>
+            </li>
+
+            <li class="wm-header-nav-item">
+              <a class="wm-header-nav-link" href="/Disclosure.html" data-wm-nav-link>
+                Affiliates
+              </a>
+            </li>
+
+            <li class="wm-header-nav-item">
+              <button class="wm-header-dropdown-toggle" id="wm-header-legal-toggle" type="button" aria-expanded="false"
+                aria-controls="wm-header-legal-dropdown">
+                Legal
+
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                    stroke-linejoin="round"></path>
+                </svg>
+              </button>
+
+              <div class="wm-header-dropdown" id="wm-header-legal-dropdown" aria-hidden="true">
+                <a class="wm-header-dropdown-link" href="/privacy-policy" data-wm-nav-link>
+                  Privacy Policy
+
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"></path>
+                  </svg>
+                </a>
+
+                <a class="wm-header-dropdown-link" href="/terms-of-use"
+                  data-wm-nav-link>
+                  Terms of Use
+
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"></path>
+                  </svg>
+                </a>
+              </div>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="wm-header-actions">
+          <a class="wm-header-call" href="tel:+18555241346" data-wm-header-call data-cta-page="global-header"
+            data-cta-section="desktop-navigation" data-cta-name="header-call-now"
+            aria-label="Call WindowMotiv at 1-855-524-1346">
+            <span class="wm-header-call-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M7 4h3l1.5 4-2 1.5a15 15 0 0 0 5 5l1.5-2L20 14v3c0 1.1-.9 2-2 2C10.8 19 5 13.2 5 6c0-1.1.9-2 2-2Z"
+                  stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+
+            <span class="wm-header-call-copy">
+              <span class="wm-header-call-label">
+                Speak with a project specialist
+              </span>
+
+              <span class="wm-header-call-number" data-wm-visible-phone>
+                1-855-524-1346
+              </span>
+            </span>
+          </a>
+
+          <button class="wm-header-project-cta js-wp-open-form" type="button" data-wm-header-survey-trigger
+            data-cta-page="global-header" data-cta-section="desktop-navigation" data-cta-name="start-my-project"
+            aria-label="Open the WindowMotiv project survey">
+            Start My Project
+
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </button>
+
+          <a class="wm-header-mobile-call" href="tel:+18555241346" data-wm-header-call data-cta-page="global-header"
+            data-cta-section="mobile-header" data-cta-name="mobile-header-call"
+            aria-label="Call WindowMotiv at 1-855-524-1346">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M7 4h3l1.5 4-2 1.5a15 15 0 0 0 5 5l1.5-2L20 14v3c0 1.1-.9 2-2 2C10.8 19 5 13.2 5 6c0-1.1.9-2 2-2Z"
+                stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+            </svg>
+          </a>
+
+          <button class="wm-header-menu-toggle" id="wm-header-menu-toggle" type="button" aria-expanded="false"
+            aria-controls="wm-header-mobile-panel" aria-label="Open WindowMotiv menu">
+            <span class="wm-header-menu-icon" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wm-header-mobile-panel" id="wm-header-mobile-panel" aria-hidden="true">
+    <div class="wm-header-mobile-drawer" role="dialog" aria-modal="true" aria-label="WindowMotiv mobile navigation">
+      <div class="wm-header-mobile-top">
+        <a class="wm-header-brand" href="/" aria-label="WindowMotiv home"
+          data-wm-nav-link>
+          <span class="wm-header-logo" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="6" y="5" width="20" height="22" rx="1.5" stroke="currentColor" stroke-width="2"></rect>
+
+              <path d="M16 6v20M7 16h18" stroke="currentColor" stroke-width="2"></path>
+            </svg>
+          </span>
+
+          <span class="wm-header-brand-copy">
+            <span class="wm-header-brand-name">
+              Window<strong>Motiv</strong>
+            </span>
+
+            <span class="wm-header-brand-tagline">
+              Smarter window project matching
+            </span>
+          </span>
+        </a>
+
+        <button class="wm-header-mobile-close" id="wm-header-mobile-close" type="button"
+          aria-label="Close WindowMotiv menu">
+          ×
+        </button>
+      </div>
+
+      <nav class="wm-header-mobile-nav" aria-label="WindowMotiv mobile navigation links">
+        <a class="wm-header-mobile-nav-link" href="/" data-wm-nav-link>
+          Home
+
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"></path>
+          </svg>
+        </a>
+
+        <a class="wm-header-mobile-nav-link" href="/Partner.html" data-wm-nav-link>
+          Partner Offers
+
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"></path>
+          </svg>
+        </a>
+
+        <a class="wm-header-mobile-nav-link" href="/Disclosure.html" data-wm-nav-link>
+          Affiliates
+
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"></path>
+          </svg>
+        </a>
+
+        <button class="wm-header-mobile-legal-toggle" id="wm-header-mobile-legal-toggle" type="button"
+          aria-expanded="false" aria-controls="wm-header-mobile-legal-panel">
+          Legal
+
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="m5 7.5 5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+        </button>
+
+        <div class="wm-header-mobile-legal-panel" id="wm-header-mobile-legal-panel" aria-hidden="true">
+          <div class="wm-header-mobile-legal-inner">
+            <div class="wm-header-mobile-legal-links">
+              <a class="wm-header-mobile-legal-link" href="/privacy-policy"
+                data-wm-nav-link>
+                Privacy Policy
+              </a>
+
+              <a class="wm-header-mobile-legal-link" href="/terms-of-use"
+                data-wm-nav-link>
+                Terms of Use
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="wm-header-mobile-actions">
+        <button class="wm-header-mobile-action wm-header-mobile-action--project" type="button"
+          data-wm-header-survey-trigger data-cta-page="global-header" data-cta-section="mobile-drawer"
+          data-cta-name="start-my-window-project" aria-label="Open the WindowMotiv project survey">
+          Start My Window Project
+        </button>
+
+        <a class="wm-header-mobile-action wm-header-mobile-action--call" href="tel:+18555241346" data-wm-header-call
+          data-cta-page="global-header" data-cta-section="mobile-drawer" data-cta-name="call-windowmotiv">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 4h3l1.5 4-2 1.5a15 15 0 0 0 5 5l1.5-2L20 14v3c0 1.1-.9 2-2 2C10.8 19 5 13.2 5 6c0-1.1.9-2 2-2Z"
+              stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+          </svg>
+
+          Call
+          <span data-wm-visible-phone>
+            1-855-524-1346
+          </span>
+        </a>
+
+        <p class="wm-header-mobile-note">
+          WindowMotiv helps homeowners explore window-project opportunities
+          through participating independent providers.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const root =
+        document.getElementById("wm-global-header");
+
+      if (
+        !root ||
+        root.dataset.wmHeaderInitialized === "true"
+      ) {
+        return;
+      }
+
+      root.dataset.wmHeaderInitialized = "true";
+
+      const CONFIG = Object.freeze({
+        VERSION: "V1.0.4",
+
+        STICKY_HEADER: true,
+
+        BRAND_NAME:
+          "WindowMotiv",
+
+        HOME_URL:
+          "/",
+
+        PRIVACY_URL:
+          "/privacy-policy",
+
+        TERMS_URL:
+          "/terms-of-use",
+
+        PHONE_VISIBLE:
+          "1-855-524-1346",
+
+        PHONE_DIGITS:
+          "+18555241346",
+
+        SURVEY_QUERY_KEY:
+          "open_survey",
+
+        SURVEY_EVENT:
+          "windowmotiv:open-survey",
+
+        SURVEY_TRIGGER_SELECTORS: Object.freeze([
+          ".js-wp-open-form",
+          "[data-wm-open-survey]",
+          "[data-windowmotiv-open-survey]",
+          "[data-open-survey]",
+          "[data-survey-trigger]",
+          ".wm-open-survey",
+          ".windowmotiv-open-survey",
+          "#wm-open-survey",
+          "#windowmotiv-open-survey",
+          ".open-survey",
+          ".survey-trigger"
+        ]),
+
+        SURVEY_MODAL_SELECTORS: Object.freeze([
+          "#wp-lead-modal",
+          ".wp-modal",
+          "[data-wm-survey-modal]",
+          "[data-windowmotiv-survey-modal]",
+          "#wm-survey-modal",
+          "#windowmotiv-survey-modal",
+          ".wm-survey-modal",
+          ".windowmotiv-survey-modal"
+        ])
+      });
+
+      const shell =
+        root.querySelector(".wm-header-shell");
+
+      const spacer =
+        root.querySelector(".wm-header-spacer");
+
+      const menuToggle =
+        root.querySelector("#wm-header-menu-toggle");
+
+      const mobilePanel =
+        root.querySelector("#wm-header-mobile-panel");
+
+      const mobileDrawer =
+        root.querySelector(".wm-header-mobile-drawer");
+
+      const mobileClose =
+        root.querySelector("#wm-header-mobile-close");
+
+      const legalToggle =
+        root.querySelector("#wm-header-legal-toggle");
+
+      const legalDropdown =
+        root.querySelector("#wm-header-legal-dropdown");
+
+      const mobileLegalToggle =
+        root.querySelector("#wm-header-mobile-legal-toggle");
+
+      const mobileLegalPanel =
+        root.querySelector("#wm-header-mobile-legal-panel");
+
+      const dropdownToggles =
+        Array.from(
+          root.querySelectorAll(
+            ".wm-header-dropdown-toggle"
+          )
+        );
+
+      const mobileDropdownToggles =
+        Array.from(
+          root.querySelectorAll(
+            ".wm-header-mobile-legal-toggle"
+          )
+        );
+
+      function dropdownPanelFor(toggle) {
+        return root.querySelector(
+          "#" +
+          toggle.getAttribute("aria-controls")
+        );
+      }
+
+      function setDropdownState(toggle, open) {
+        const panel =
+          dropdownPanelFor(toggle);
+
+        if (!panel) {
+          return;
+        }
+
+        panel.classList.toggle(
+          "is-open",
+          open
+        );
+
+        panel.setAttribute(
+          "aria-hidden",
+          String(!open)
+        );
+
+        toggle.setAttribute(
+          "aria-expanded",
+          String(open)
+        );
+      }
+
+      let previousFocus = null;
+      let surveyOpening = false;
+
+      function sanitizeAttributionValue(
+        value,
+        fallback
+      ) {
+        const normalized =
+          String(value || fallback || "")
+            .replace(/[^a-zA-Z0-9/_-]/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "")
+            .slice(0, 120);
+
+        return normalized || fallback;
+      }
+
+      function getCurrentPageName() {
+        const path =
+          window.location.pathname
+            .replace(/^\/+|\/+$/g, "");
+
+        return sanitizeAttributionValue(
+          path || "home",
+          "unknown-page"
+        );
+      }
+
+      function buildSurveyDetail(trigger) {
+        return {
+          brand:
+            CONFIG.BRAND_NAME,
+
+          source:
+            "global-header",
+
+          page_name:
+            getCurrentPageName(),
+
+          cta_section:
+            sanitizeAttributionValue(
+              trigger?.dataset?.ctaSection,
+              "global-header"
+            ),
+
+          cta_name:
+            sanitizeAttributionValue(
+              trigger?.dataset?.ctaName,
+              "start-my-project"
+            ),
+
+          referring_path:
+            window.location.pathname,
+
+          referring_url:
+            window.location.href,
+
+          timestamp:
+            new Date().toISOString()
+        };
+      }
+
+      function configureCalls() {
+        root
+          .querySelectorAll("[data-wm-header-call]")
+          .forEach((element) => {
+            element.setAttribute(
+              "href",
+              `tel:${CONFIG.PHONE_DIGITS}`
+            );
+
+            element.setAttribute(
+              "aria-label",
+              `Call ${CONFIG.BRAND_NAME} at ${CONFIG.PHONE_VISIBLE}`
+            );
+          });
+
+        root
+          .querySelectorAll("[data-wm-visible-phone]")
+          .forEach((element) => {
+            element.textContent =
+              CONFIG.PHONE_VISIBLE;
+          });
+      }
+
+      function updateSpacerHeight() {
+        if (
+          !CONFIG.STICKY_HEADER ||
+          !shell ||
+          !spacer
+        ) {
+          return;
+        }
+
+        const headerHeight = shell.offsetHeight;
+
+        spacer.style.height = `${headerHeight}px`;
+
+        // Published so sticky page furniture can clear the fixed header.
+        document.documentElement.style.setProperty(
+          "--wm-header-offset",
+          `${headerHeight}px`
+        );
+      }
+
+      function updateScrollState() {
+        root.classList.toggle(
+          "is-scrolled",
+          window.scrollY > 12
+        );
+      }
+
+      function openDesktopDropdown(toggle) {
+        closeDesktopLegal();
+        setDropdownState(toggle, true);
+      }
+
+      function closeDesktopLegal() {
+        dropdownToggles.forEach((toggle) => {
+          setDropdownState(toggle, false);
+        });
+      }
+
+      function openDesktopDropdownIsOpen(toggle) {
+        const panel =
+          dropdownPanelFor(toggle);
+
+        return Boolean(
+          panel &&
+          panel.classList.contains("is-open")
+        );
+      }
+
+      function toggleDesktopDropdown(toggle) {
+        if (openDesktopDropdownIsOpen(toggle)) {
+          closeDesktopLegal();
+        } else {
+          openDesktopDropdown(toggle);
+        }
+      }
+
+      function toggleMobileDropdown(toggle) {
+        const panel =
+          dropdownPanelFor(toggle);
+
+        if (!panel) {
+          return;
+        }
+
+        setDropdownState(
+          toggle,
+          !panel.classList.contains("is-open")
+        );
+      }
+
+      function openMenu() {
+        previousFocus =
+          document.activeElement;
+
+        mobilePanel.classList.add("is-open");
+
+        mobilePanel.setAttribute(
+          "aria-hidden",
+          "false"
+        );
+
+        menuToggle.setAttribute(
+          "aria-expanded",
+          "true"
+        );
+
+        menuToggle.setAttribute(
+          "aria-label",
+          "Close WindowMotiv menu"
+        );
+
+        document.documentElement.style.overflow =
+          "hidden";
+
+        window.setTimeout(
+          () => mobileClose.focus(),
+          30
+        );
+      }
+
+      function closeMenu(
+        restoreFocus = true
+      ) {
+        mobilePanel.classList.remove("is-open");
+
+        mobilePanel.setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
+        menuToggle.setAttribute(
+          "aria-expanded",
+          "false"
+        );
+
+        menuToggle.setAttribute(
+          "aria-label",
+          "Open WindowMotiv menu"
+        );
+
+        document.documentElement.style.overflow =
+          "";
+
+        if (
+          restoreFocus &&
+          previousFocus &&
+          typeof previousFocus.focus === "function"
+        ) {
+          previousFocus.focus();
+        }
+      }
+
+      function toggleMenu() {
+        if (
+          mobilePanel.classList.contains("is-open")
+        ) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      }
+
+      function tryGlobalSurveyFunction(detail) {
+        const functionCandidates = [
+          window.openWindowMotivSurvey,
+          window.openWMSurvey,
+          window.WindowMotivSurvey?.open,
+          window.WM_SURVEY?.open
+        ];
+
+        for (
+          const candidate of functionCandidates
+        ) {
+          if (
+            typeof candidate === "function"
+          ) {
+            try {
+              candidate(detail);
+              return true;
+            } catch (error) {
+              /* Continue to the next supported integration method. */
+            }
+          }
+        }
+
+        return false;
+      }
+
+      function tryExistingSurveyTrigger(detail) {
+        const selectors =
+          CONFIG.SURVEY_TRIGGER_SELECTORS.join(",");
+
+        const candidates =
+          Array.from(
+            document.querySelectorAll(selectors)
+          ).filter((element) => {
+            return (
+              !root.contains(element) &&
+              element.offsetParent !== null &&
+              !element.disabled
+            );
+          });
+
+        const trigger =
+          candidates[0];
+
+        if (!trigger) {
+          return false;
+        }
+
+        const originalCtaName =
+          trigger.getAttribute("data-cta-name");
+
+        const originalCtaSection =
+          trigger.getAttribute("data-cta-section");
+
+        trigger.setAttribute(
+          "data-cta-name",
+          detail.cta_name
+        );
+
+        trigger.setAttribute(
+          "data-cta-section",
+          detail.cta_section
+        );
+
+        trigger.click();
+
+        window.setTimeout(() => {
+          if (originalCtaName === null) {
+            trigger.removeAttribute("data-cta-name");
+          } else {
+            trigger.setAttribute(
+              "data-cta-name",
+              originalCtaName
+            );
+          }
+
+          if (originalCtaSection === null) {
+            trigger.removeAttribute("data-cta-section");
+          } else {
+            trigger.setAttribute(
+              "data-cta-section",
+              originalCtaSection
+            );
+          }
+        }, 0);
+
+        return true;
+      }
+
+      function tryExistingSurveyModal() {
+        const selectors =
+          CONFIG.SURVEY_MODAL_SELECTORS.join(",");
+
+        const modal =
+          document.querySelector(selectors);
+
+        if (!modal) {
+          return false;
+        }
+
+        if (
+          modal.id === "wp-lead-modal" ||
+          modal.classList.contains("wp-modal")
+        ) {
+          modal.setAttribute(
+            "aria-hidden",
+            "false"
+          );
+        } else {
+          modal.classList.add(
+            "is-open",
+            "active",
+            "open"
+          );
+
+          modal.setAttribute(
+            "aria-hidden",
+            "false"
+          );
+        }
+
+        if (
+          modal.hasAttribute("hidden")
+        ) {
+          modal.removeAttribute("hidden");
+        }
+
+        modal.style.display = "";
+
+        document.documentElement.style.overflow =
+          "hidden";
+
+        const focusTarget =
+          modal.querySelector(
+            'input:not([type="hidden"]), select, textarea, button, [tabindex]:not([tabindex="-1"])'
+          );
+
+        window.setTimeout(
+          () => focusTarget?.focus(),
+          60
+        );
+
+        return true;
+      }
+
+      function dispatchSurveyEvent(detail) {
+        let eventHandled = false;
+
+        const event =
+          new CustomEvent(
+            CONFIG.SURVEY_EVENT,
+            {
+              bubbles: true,
+              cancelable: true,
+              detail: {
+                ...detail,
+
+                markHandled() {
+                  eventHandled = true;
+                }
+              }
+            }
+          );
+
+        window.dispatchEvent(event);
+        document.dispatchEvent(event);
+
+        return (
+          eventHandled ||
+          event.defaultPrevented
+        );
+      }
+
+      function createFallbackSurveyUrl(detail) {
+        // HOME_URL is a site-relative path; a bare path is not a valid URL
+        // without a base, and a throw here would swallow the click.
+        const url =
+          new URL(
+            CONFIG.HOME_URL,
+            window.location.origin
+          );
+
+        url.searchParams.set(
+          CONFIG.SURVEY_QUERY_KEY,
+          "1"
+        );
+
+        url.searchParams.set(
+          "page_name",
+          detail.page_name
+        );
+
+        url.searchParams.set(
+          "cta_section",
+          detail.cta_section
+        );
+
+        url.searchParams.set(
+          "cta_name",
+          detail.cta_name
+        );
+
+        url.searchParams.set(
+          "referring_path",
+          detail.referring_path
+        );
+
+        return url.toString();
+      }
+
+      function removeSurveyQueryFlag() {
+        try {
+          const url =
+            new URL(window.location.href);
+
+          if (
+            url.searchParams.get(
+              CONFIG.SURVEY_QUERY_KEY
+            ) !== "1"
+          ) {
+            return;
+          }
+
+          url.searchParams.delete(
+            CONFIG.SURVEY_QUERY_KEY
+          );
+
+          window.history.replaceState(
+            {},
+            document.title,
+            `${url.pathname}${url.search}${url.hash}`
+          );
+        } catch (error) {
+          /* URL cleanup is optional. */
+        }
+      }
+
+      function openSurvey(
+        trigger = null,
+        options = {}
+      ) {
+        if (surveyOpening) {
+          return;
+        }
+
+        surveyOpening = true;
+
+        const detail =
+          buildSurveyDetail(trigger);
+
+        if (
+          mobilePanel.classList.contains("is-open")
+        ) {
+          closeMenu(false);
+        }
+
+        closeDesktopLegal();
+
+        let opened = false;
+
+        opened =
+          tryGlobalSurveyFunction(detail);
+
+        if (!opened) {
+          opened =
+            dispatchSurveyEvent(detail);
+        }
+
+        if (!opened) {
+          opened =
+            tryExistingSurveyTrigger(detail);
+        }
+
+        if (!opened) {
+          opened =
+            tryExistingSurveyModal();
+        }
+
+        if (opened) {
+          removeSurveyQueryFlag();
+
+          window.setTimeout(
+            () => {
+              surveyOpening = false;
+            },
+            400
+          );
+
+          return;
+        }
+
+        if (
+          options.allowFallback !== false
+        ) {
+          window.location.href =
+            createFallbackSurveyUrl(detail);
+
+          return;
+        }
+
+        surveyOpening = false;
+      }
+
+      function initializeSurveyTriggers() {
+        root
+          .querySelectorAll(
+            "[data-wm-header-survey-trigger]"
+          )
+          .forEach((trigger) => {
+            trigger.addEventListener(
+              "click",
+              () => {
+                openSurvey(trigger);
+              }
+            );
+          });
+      }
+
+      function initializeSurveyQueryOpen() {
+        let shouldOpen = false;
+
+        try {
+          const url =
+            new URL(window.location.href);
+
+          shouldOpen =
+            url.searchParams.get(
+              CONFIG.SURVEY_QUERY_KEY
+            ) === "1";
+        } catch (error) {
+          shouldOpen = false;
+        }
+
+        if (!shouldOpen) {
+          return;
+        }
+
+        const attemptOpen = () => {
+          openSurvey(
+            null,
+            {
+              allowFallback: false
+            }
+          );
+        };
+
+        if (
+          document.readyState === "complete"
+        ) {
+          window.setTimeout(
+            attemptOpen,
+            450
+          );
+        } else {
+          window.addEventListener(
+            "load",
+            () => {
+              window.setTimeout(
+                attemptOpen,
+                450
+              );
+            },
+            {
+              once: true
+            }
+          );
+        }
+      }
+
+      function normalizePath(value) {
+        try {
+          const url =
+            new URL(
+              value,
+              window.location.origin
+            );
+
+          return url.pathname
+            .replace(/\/+$/, "") ||
+            "/";
+        } catch (error) {
+          return "";
+        }
+      }
+
+      function setActiveNavigation() {
+        const currentPath =
+          normalizePath(
+            window.location.href
+          );
+
+        root
+          .querySelectorAll("[data-wm-nav-link]")
+          .forEach((link) => {
+            const linkPath =
+              normalizePath(
+                link.getAttribute("href")
+              );
+
+            const isActive =
+              Boolean(
+                linkPath &&
+                currentPath === linkPath
+              );
+
+            link.classList.toggle(
+              "is-active",
+              isActive
+            );
+
+            if (isActive) {
+              link.setAttribute(
+                "aria-current",
+                "page"
+              );
+            } else {
+              link.removeAttribute(
+                "aria-current"
+              );
+            }
+
+          });
+
+        // A dropdown reads as active when one of its own links is the page.
+        dropdownToggles
+          .concat(mobileDropdownToggles)
+          .forEach((toggle) => {
+            const panel =
+              dropdownPanelFor(toggle);
+
+            toggle.classList.toggle(
+              "is-active",
+              Boolean(
+                panel &&
+                panel.querySelector(
+                  "[data-wm-nav-link].is-active"
+                )
+              )
+            );
+          });
+      }
+
+      function initializeDesktopLegal() {
+        dropdownToggles.forEach((toggle) => {
+          toggle.addEventListener(
+            "click",
+            (event) => {
+              event.stopPropagation();
+              toggleDesktopDropdown(toggle);
+            }
+          );
+
+          const panel =
+            dropdownPanelFor(toggle);
+
+          if (panel) {
+            panel.addEventListener(
+              "click",
+              (event) => {
+                event.stopPropagation();
+              }
+            );
+          }
+        });
+
+        document.addEventListener(
+          "click",
+          closeDesktopLegal
+        );
+      }
+
+      function initializeMobileMenu() {
+        menuToggle.addEventListener(
+          "click",
+          toggleMenu
+        );
+
+        mobileClose.addEventListener(
+          "click",
+          () => closeMenu()
+        );
+
+        mobileDropdownToggles.forEach((toggle) => {
+          toggle.addEventListener(
+            "click",
+            () => toggleMobileDropdown(toggle)
+          );
+        });
+
+        mobilePanel.addEventListener(
+          "click",
+          (event) => {
+            if (
+              event.target === mobilePanel
+            ) {
+              closeMenu();
+            }
+          }
+        );
+
+        root
+          .querySelectorAll(
+            ".wm-header-mobile-nav-link, .wm-header-mobile-legal-link"
+          )
+          .forEach((link) => {
+            link.addEventListener(
+              "click",
+              () => closeMenu(false)
+            );
+          });
+
+        document.addEventListener(
+          "keydown",
+          (event) => {
+            if (event.key === "Escape") {
+              const openToggle =
+                dropdownToggles.find(
+                  openDesktopDropdownIsOpen
+                );
+
+              if (openToggle) {
+                closeDesktopLegal();
+                openToggle.focus();
+                return;
+              }
+
+              if (
+                mobilePanel.classList.contains("is-open")
+              ) {
+                closeMenu();
+                return;
+              }
+            }
+
+            if (
+              event.key !== "Tab" ||
+              !mobilePanel.classList.contains("is-open")
+            ) {
+              return;
+            }
+
+            const focusable =
+              Array.from(
+                mobileDrawer.querySelectorAll(
+                  'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+                )
+              ).filter(
+                (element) =>
+                  element.offsetParent !== null
+              );
+
+            if (!focusable.length) {
+              return;
+            }
+
+            const first =
+              focusable[0];
+
+            const last =
+              focusable[
+              focusable.length - 1
+              ];
+
+            if (
+              event.shiftKey &&
+              document.activeElement === first
+            ) {
+              event.preventDefault();
+              last.focus();
+            } else if (
+              !event.shiftKey &&
+              document.activeElement === last
+            ) {
+              event.preventDefault();
+              first.focus();
+            }
+          }
+        );
+      }
+
+      if (CONFIG.STICKY_HEADER) {
+        root.classList.add("is-sticky");
+      }
+
+      configureCalls();
+      initializeDesktopLegal();
+      initializeMobileMenu();
+      initializeSurveyTriggers();
+      initializeSurveyQueryOpen();
+      setActiveNavigation();
+      updateSpacerHeight();
+      updateScrollState();
+
+      window.addEventListener(
+        "scroll",
+        updateScrollState,
+        {
+          passive: true
+        }
+      );
+
+      window.addEventListener(
+        "resize",
+        () => {
+          updateSpacerHeight();
+
+          if (
+            window.innerWidth > 1088 &&
+            mobilePanel.classList.contains("is-open")
+          ) {
+            closeMenu(false);
+          }
+
+          if (
+            window.innerWidth <= 1088
+          ) {
+            closeDesktopLegal();
+          }
+        }
+      );
+
+      if (
+        "ResizeObserver" in window &&
+        shell
+      ) {
+        const observer =
+          new ResizeObserver(
+            updateSpacerHeight
+          );
+
+        observer.observe(shell);
+      }
+    })();
+  </script>
+</header>
+
+<!--
+==============================================================================
+TERMS OF USE — WINDOW MOTIV
+VERSION: V2.0.0
+EFFECTIVE DATE: 2026-09-02
+LAST UPDATED: 2026-09-02
+
+CHANGE LOG
+------------------------------------------------------------------------------
+V2.0.0 | 2026-09-02
+- Replaced the V1.0.0 card-based Terms of Service page with the standard Motiv
+  plain-document Terms of Use, per Project: Disclosures.
+- Adopted the 32-section Motiv standard published at
+  disability-motiv.com/terms-of-use, reworded for window replacement and
+  home-improvement services.
+- Removed the hero artwork, summary strip, jump menu, policy cards, accordions,
+  print button, and pre-footer call-to-action.
+- Retained the WindowMotiv navy, blue, and orange palette.
+- Resolved every REPLACE_WITH_* placeholder to the Motiv Brands entity details.
+- Moved the page from /Terms.html to /terms-of-use.
+
+SOURCE OF TRUTH
+------------------------------------------------------------------------------
+Edit build/src/terms-of-use.txt and run:  python build/gen.py build/src/*.txt
+Do not hand-edit this generated file.
+
+IMPORTANT LEGAL REVIEW
+------------------------------------------------------------------------------
+This document must be reviewed and approved by qualified legal counsel before
+publication. The arbitration agreement, class-action waiver, jury-trial waiver,
+liability limitation, indemnification, and governing-law provisions must be
+confirmed as appropriate, conspicuous, and enforceable for Window Motiv.
+==============================================================================
+-->
+
+<div id="wm-legal" class="wm-legal">
+  <style>
+    #wm-legal {
+      --wl-ink: #102538;
+      --wl-body: #3d5568;
+      --wl-muted: #5d7284;
+      --wl-line: #dbe6ee;
+      --wl-band: #f1f8fc;
+      --wl-navy: #002647;
+      --wl-blue: #005baa;
+      --wl-orange: #dd5d20;
+      --wl-white: #ffffff;
+      --wl-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia,
+        "Times New Roman", serif;
+      --wl-sans: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Arial, Helvetica, sans-serif;
+
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      color: var(--wl-body);
+      background: var(--wl-band);
+      font-family: var(--wl-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #wm-legal *,
+    #wm-legal *::before,
+    #wm-legal *::after {
+      box-sizing: border-box;
+    }
+
+    /* ---------- title band ---------- */
+
+    #wm-legal .wl-band {
+      padding: clamp(2.75rem, 6vw, 4.5rem) 1.25rem clamp(2.25rem, 5vw, 3.5rem);
+      text-align: center;
+      background: linear-gradient(180deg, #fbfdfe 0%, var(--wl-band) 100%);
+    }
+
+    #wm-legal .wl-eyebrow {
+      margin: 0 0 0.9rem;
+      color: var(--wl-blue);
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    #wm-legal .wl-title {
+      max-width: 60rem;
+      margin: 0 auto;
+      color: var(--wl-navy);
+      font-family: var(--wl-serif);
+      font-size: clamp(1.9rem, 5.2vw, 3.15rem);
+      font-weight: 400;
+      line-height: 1.14;
+      letter-spacing: 0.015em;
+    }
+
+    #wm-legal .wl-rule {
+      width: 3.5rem;
+      height: 2px;
+      margin: 1.5rem auto 0;
+      border: 0;
+      background: var(--wl-orange);
+    }
+
+    /* ---------- document card ---------- */
+
+    #wm-legal .wl-doc {
+      max-width: 62rem;
+      margin: 0 auto clamp(3rem, 7vw, 5.5rem);
+      padding: clamp(1.75rem, 5vw, 4rem) clamp(1.25rem, 5vw, 4.25rem);
+      border: 1px solid var(--wl-line);
+      border-radius: 4px;
+      background: var(--wl-white);
+      box-shadow: 0 1px 2px rgba(0, 31, 58, 0.04),
+        0 1.25rem 3rem rgba(0, 31, 58, 0.05);
+    }
+
+    #wm-legal .wl-dates {
+      margin: 0 0 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--wl-line);
+      color: var(--wl-navy);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      line-height: 1.9;
+    }
+
+    #wm-legal p {
+      margin: 0 0 1.05rem;
+      font-size: 0.875rem;
+      line-height: 1.85;
+    }
+
+    #wm-legal h2 {
+      margin: 2.75rem 0 1rem;
+      color: var(--wl-navy);
+      font-family: var(--wl-serif);
+      font-size: clamp(1.0625rem, 2.2vw, 1.375rem);
+      font-weight: 400;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+    }
+
+    #wm-legal h2:first-of-type {
+      margin-top: 1.5rem;
+    }
+
+    #wm-legal h3 {
+      margin: 1.9rem 0 0.75rem;
+      color: var(--wl-blue);
+      font-family: var(--wl-serif);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    #wm-legal .wl-note {
+      margin: 0 0 1.05rem;
+      color: var(--wl-navy);
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.8;
+    }
+
+    #wm-legal ul {
+      margin: 0 0 1.05rem;
+      padding-left: 1.35rem;
+    }
+
+    #wm-legal li {
+      margin: 0 0 0.5rem;
+      font-size: 0.875rem;
+      line-height: 1.8;
+    }
+
+    #wm-legal .wl-addr {
+      margin: 0 0 1.35rem;
+      padding: 0.9rem 1.15rem;
+      border-left: 3px solid var(--wl-blue);
+      background: var(--wl-band);
+      color: var(--wl-navy);
+      font-size: 0.8125rem;
+      line-height: 1.85;
+    }
+
+    #wm-legal a {
+      color: var(--wl-blue);
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+
+    #wm-legal a:hover,
+    #wm-legal a:focus-visible {
+      color: var(--wl-orange);
+    }
+
+    #wm-legal .wl-table-scroll {
+      margin: 0 0 1.35rem;
+      overflow-x: auto;
+    }
+
+    #wm-legal table {
+      width: 100%;
+      min-width: 34rem;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+
+    #wm-legal th,
+    #wm-legal td {
+      padding: 0.7rem 0.85rem;
+      border: 1px solid var(--wl-line);
+      text-align: left;
+      line-height: 1.7;
+      vertical-align: top;
+    }
+
+    #wm-legal th {
+      color: var(--wl-navy);
+      background: var(--wl-band);
+      font-weight: 600;
+    }
+
+    @media print {
+      #wm-global-header,
+      #wm-global-footer {
+        display: none !important;
+      }
+
+      #wm-legal {
+        background: #ffffff;
+      }
+
+      #wm-legal .wl-doc {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        box-shadow: none;
+      }
+
+      #wm-legal h2,
+      #wm-legal h3 {
+        break-after: avoid;
+      }
+    }
+  </style>
+
+  <section class="wl-band">
+    <p class="wl-eyebrow">Please read carefully</p>
+
+    <h1 class="wl-title">TERMS OF USE</h1>
+
+    <hr class="wl-rule">
+  </section>
+
+  <article class="wl-doc">
+    <p class="wl-dates">
+      Effective Date: September 2, 2026<br>
+      Last Updated: September 2, 2026
+    </p>
+
+      <p>These Terms of Use ("Terms") govern your access to and use of websites, landing pages, forms, telephone services, digital properties, and other consumer-facing services operated by Motiv Brands Group, LLC, Motiv Brands, Inc., Leads Motiv, LLC, and their controlled subsidiaries and affiliated consumer-facing brands (collectively, "Motiv," "we," "us," or "our").</p>
+      <p>Window Motiv is a consumer-facing marketing brand and DBA of Motiv Brands Group, LLC.</p>
+      <p>Leads Motiv, LLC is the primary entity through which many of Motiv's consumer-facing marketing brands and DBAs are used for lead-generation activities. A current list of Motiv subsidiaries, brands, and DBAs is available through our <a href="/disclosures/marketing-partners">Brands, Affiliates, and Marketing Partners Disclosure</a>.</p>
+      <p>These Terms apply to all Motiv consumer-facing brands and Services unless a particular website or Service provides supplemental or different terms that expressly apply to that Service.</p>
+      <h2>IMPORTANT NOTICE REGARDING ARBITRATION</h2>
+      <p class="wl-note">THESE TERMS CONTAIN A BINDING ARBITRATION AGREEMENT, CLASS-ACTION WAIVER, AND JURY-TRIAL WAIVER IN SECTION 18.</p>
+      <p>Except for certain disputes described below, you and Motiv agree that disputes between us will be resolved through individual binding arbitration rather than in court.</p>
+      <p>Please read Section 18 carefully.</p>
+      <h2>1. ACCEPTANCE OF THESE TERMS</h2>
+      <p>By accessing or using our websites or Services, you agree to comply with these Terms.</p>
+      <p>More specifically, when you: submit a form; check a box indicating agreement; click a button accompanied by notice that continuing constitutes agreement to these Terms; request to be connected with a service provider; or otherwise affirmatively accept these Terms, you enter into a binding agreement with Motiv.</p>
+      <p>If you do not agree to these Terms, do not submit a form or use the applicable Service.</p>
+      <p>When these Terms are presented in connection with a form, the link to these Terms and any accompanying disclosure should be reviewed before you submit the form.</p>
+      <h2>2. ELIGIBILITY</h2>
+      <p>Our consumer-facing Services are intended only for individuals who are 18 years of age or older and who are legally capable of entering into a binding agreement.</p>
+      <p>By using a Service or submitting information to us, you represent that: you are at least 18 years old; the information you provide relates to you or another person for whom you are legally authorized to act; you are the owner of the property identified in your request or are otherwise authorized to request work on that property; you have legal capacity to agree to these Terms; and your use of the Services does not violate applicable law.</p>
+      <p>We do not knowingly provide our consumer lead-generation Services to children.</p>
+      <h2>3. ABOUT MOTIV AND OUR SERVICES</h2>
+      <p>Motiv operates consumer-facing brands designed to help individuals obtain information, evaluate service options, determine potential eligibility, request quotes or consultations, and connect with service providers.</p>
+      <p>Depending on the Service, Motiv may: provide information; operate forms or questionnaires; conduct preliminary qualification screening; match consumers with service providers; route requests to available providers; facilitate communications; provide certain services directly; or refer consumers to independent third-party providers.</p>
+      <p>Window Motiv is used for marketing, consumer education, lead generation, quote requests, provider matching, and related commercial activities involving window replacement, window installation, and related home-improvement services.</p>
+      <p>Motiv operates a lead-generation business and may receive compensation when a consumer is successfully connected with a service provider.</p>
+      <p>Consumers are generally not charged by Motiv for using our lead-generation or matching Services.</p>
+      <p>Any fees charged by an independent provider are governed by the separate agreement, if any, between you and that provider.</p>
+      <h2>4. CONSUMER-REQUESTED REFERRALS</h2>
+      <p>When you submit a request to be connected with a service provider, you are asking Motiv to use the information you provide to identify and connect you with a provider capable of responding to the specific service you requested.</p>
+      <p>Motiv may use automated routing, matching, qualification, ping/post, provider-availability, or bidding systems to determine an appropriate provider.</p>
+      <p>Limited information may be processed through these systems or shared with prospective providers to determine matters such as: geographic availability; service eligibility; provider capacity; service type; qualification criteria; provider interest; or routing economics.</p>
+      <p>The completed consumer lead is intended to be delivered exclusively to one selected service provider for the service requested, unless we clearly disclose otherwise.</p>
+      <p>Our agreements generally prohibit the selected provider from reselling or redistributing a Motiv lead to another lead buyer.</p>
+      <p>A current list of companies that may receive consumer leads is available through our <a href="/disclosures/marketing-partners">Marketing Partners Disclosure</a>.</p>
+      <h2>5. NO GUARANTEE OF MATCH, ELIGIBILITY, OR RESULTS</h2>
+      <p>Submitting a form does not guarantee that: you qualify for any product, program, benefit, service, rebate, incentive, claim, quote, financing, or other opportunity; a provider will accept your request; a provider will contact you; a provider will offer services; any quote or price will be available; any particular price or rate will be offered; any energy savings will be achieved; an application will be approved; a provider will achieve a particular result; or a transaction will ultimately occur.</p>
+      <p>Any eligibility information displayed by Motiv is preliminary and informational unless expressly stated otherwise.</p>
+      <p>Final eligibility, pricing, measurement, product availability, installation scheduling, warranty terms, financing approval, and other decisions are made by the applicable provider or responsible third party.</p>
+      <h2>6. INDEPENDENT THIRD-PARTY PROVIDERS</h2>
+      <p>Unless expressly stated otherwise, service providers identified through our Services are independent third parties and are not employees, agents, representatives, joint venturers, or partners of Motiv.</p>
+      <p>Motiv does not control how an independent provider performs its services.</p>
+      <p>Although we may establish contractual, quality, licensing, compliance, or other requirements for participating providers, we do not guarantee any provider's: licensing status; certification; bonding; insurance coverage; professional qualifications; availability; pricing; workmanship; advice; representations; financial condition; regulatory compliance; or performance.</p>
+      <p>You are responsible for evaluating a provider before entering into a transaction or agreement with that provider.</p>
+      <p>Any contract for products or services entered into between you and a provider is solely between you and that provider unless Motiv is expressly identified as a contracting party.</p>
+      <h2>7. NO PROFESSIONAL ADVICE</h2>
+      <p>Content provided through Motiv Services is for general informational and lead-matching purposes.</p>
+      <p>Unless expressly stated otherwise, Motiv does not provide: legal advice; financial advice; tax advice; investment advice; insurance advice; engineering, architectural, or construction advice; energy-efficiency certification; or other licensed professional advice.</p>
+      <p>Information provided through questionnaires, qualification tools, articles, advertisements, website content, or communications should not be treated as a substitute for advice from an appropriately qualified professional.</p>
+      <h3>No Contractor or Design-Professional Relationship</h3>
+      <p>Window Motiv is not a licensed contractor, window manufacturer, installer, remodeler, engineer, or architect.</p>
+      <p>Your use of a Motiv website, completion of a form, or communication with Motiv does not create a contractor-client, design-professional, or construction relationship between you and Motiv, and does not create a contract for any window or home-improvement work.</p>
+      <p>An independent provider to whom you are referred may be a licensed contractor or may employ licensed tradespeople. Any professional or contractual relationship with such a provider arises only under the terms separately established between you and that provider.</p>
+      <h2>8. WINDOW MOTIV AND HOME-IMPROVEMENT SERVICES</h2>
+      <p>Window Motiv is a private marketing and lead-generation service.</p>
+      <p>Window Motiv, Motiv Brands Group, LLC, Motiv Brands, Inc., Leads Motiv, LLC, and their affiliates:</p>
+      <ul>
+        <li>do not manufacture, sell, finance, measure, estimate, install, warrant, or service windows, doors, siding, or other home-improvement products;</li>
+      </ul>
+      <ul>
+        <li>are not a licensed contractor or home-improvement contractor in any jurisdiction;</li>
+      </ul>
+      <ul>
+        <li>are not a utility, energy provider, weatherization program, or government agency;</li>
+      </ul>
+      <ul>
+        <li>are not endorsed, sponsored, or approved by any utility, government agency, or energy-efficiency program; and</li>
+      </ul>
+      <ul>
+        <li>cannot guarantee eligibility for or approval of any rebate, tax credit, incentive, financing program, promotional offer, or manufacturer warranty.</li>
+      </ul>
+      <p>Submitting information through Window Motiv is not the same as applying for a rebate, tax credit, utility incentive, financing product, or home-improvement contract.</p>
+      <p>Any qualification indication provided through Window Motiv is preliminary and is not a binding quote, estimate, price, or approval.</p>
+      <p>You may contact a window replacement or home-improvement provider directly without using Window Motiv.</p>
+      <p>Use of Window Motiv does not guarantee that you will be contacted, receive an appointment, receive an estimate, qualify for financing, obtain any promotional price, or achieve any particular outcome.</p>
+      <h2>9. OTHER GOVERNMENT AND INSURANCE DISCLAIMERS</h2>
+      <p>Unless a particular Service expressly states otherwise, Motiv and its consumer-facing brands are private businesses and are not government agencies.</p>
+      <p>The appearance of a government program, benefit, insurance category, or regulated service on one of our websites does not mean that Motiv is affiliated with or endorsed by the applicable government agency, insurer, carrier, regulator, or program administrator.</p>
+      <p>Where a particular brand operates in a regulated industry, additional brand-specific disclosures may apply.</p>
+      <h2>10. COMMUNICATIONS</h2>
+      <p>When you request information or submit a form, you may ask Motiv and/or a selected provider to contact you regarding your request.</p>
+      <p>Communications may include telephone calls, text messages, email, or other communications, depending on the authorization you provide.</p>
+      <p>Certain forms may separately request consent for communications involving:</p>
+      <ul>
+        <li>automated dialing technology;</li>
+      </ul>
+      <ul>
+        <li>predictive dialing technology;</li>
+      </ul>
+      <ul>
+        <li>SMS or MMS;</li>
+      </ul>
+      <ul>
+        <li>prerecorded voice;</li>
+      </ul>
+      <ul>
+        <li>artificial or AI-generated voice;</li>
+      </ul>
+      <ul>
+        <li>voicemail technology; or</li>
+      </ul>
+      <ul>
+        <li>other regulated communications technology.</li>
+      </ul>
+      <p>These Terms do not independently create consent to receive telemarketing calls, marketing text messages, prerecorded calls, artificial-voice calls, or other communications for which separate consent is legally required.</p>
+      <p>The specific disclosure and consent presented when you submit a form controls the scope of any communications authorization you provide.</p>
+      <p>Where required by law, consent to receive automated, prerecorded, artificial-voice, or marketing communications is not a condition of purchasing goods or services.</p>
+      <h2>11. MOTIV MARKETING</h2>
+      <p>Subject to applicable law and your communications choices, Motiv may contact you regarding other services offered by Motiv or its affiliated consumer-facing brands.</p>
+      <p>A provider receiving your lead is expected to use that lead for the specific service request for which the provider received it unless another use has been separately disclosed and authorized.</p>
+      <p>Motiv does not authorize a selected provider to independently resell your lead or use a Motiv lead for unrelated lead-generation purposes.</p>
+      <p>Motiv does not use your specific Window Motiv property, project, or homeownership questionnaire responses to determine unrelated cross-brand marketing offers.</p>
+      <p>You may exercise available marketing opt-out rights as described in our <a href="/privacy-policy">Privacy Policy</a> and applicable communications.</p>
+      <h2>12. ACCURACY OF INFORMATION YOU PROVIDE</h2>
+      <p>You agree to provide information that is accurate, current, and truthful to the best of your knowledge.</p>
+      <p>You may not knowingly: submit false information; impersonate another person; provide another person's contact information without authorization; misrepresent ownership of or authority over a property; fabricate qualification information; submit fraudulent service requests; intentionally generate false leads; manipulate form responses to obtain a particular result; submit information for harassment or malicious purposes; or use our forms for testing, competitive intelligence, scraping, or unauthorized commercial purposes.</p>
+      <p>We may reject, suppress, investigate, or delete submissions that we reasonably believe are fraudulent, unauthorized, abusive, duplicated, automated, or otherwise inconsistent with these Terms.</p>
+      <h2>13. PROHIBITED USES</h2>
+      <p>You may use the Services only for lawful personal purposes.</p>
+      <p>Unless we provide prior written authorization, you may not: scrape, crawl, spider, harvest, index, or systematically extract content or data from our Services; use bots, scripts, automated agents, or similar tools to access or submit our forms; submit fake, fabricated, duplicate, or fraudulent leads; reverse engineer, decompile, disassemble, or attempt to derive the source code of our software; circumvent technical, security, rate-limiting, fraud-prevention, or access controls; probe, scan, or test our systems for vulnerabilities; interfere with website operation or infrastructure; introduce malicious code, malware, or harmful technology; harvest consumer or provider information; reproduce or commercially exploit our form flows, questionnaires, scoring models, routing logic, or conversion processes; copy our landing pages, advertisements, designs, brand assets, or proprietary content for commercial use; use our Services to benchmark, train, develop, or improve a competing product, lead-generation system, machine-learning model, or artificial-intelligence system without written authorization; falsely represent an affiliation with Motiv; use our trademarks or brands without permission; use the Services in a manner that violates another person's rights; submit information in violation of privacy, communications, telemarketing, consumer-protection, or other applicable law; or assist another person in doing any of the foregoing.</p>
+      <p>Motiv reserves all rights and remedies available for unauthorized scraping, automated access, fraudulent lead generation, theft of proprietary content, and interference with our Services.</p>
+      <h2>14. INTELLECTUAL PROPERTY</h2>
+      <p>The Services and their contents are owned by or licensed to Motiv and are protected by applicable intellectual-property laws.</p>
+      <p>This includes, without limitation: brand names; logos; trademarks; website designs; graphics; photographs; videos; advertisements; written content; questionnaires; form designs; selection and arrangement of questions; software; databases; routing methodologies; proprietary business processes; and other original materials.</p>
+      <p>Subject to these Terms, Motiv grants you a limited, revocable, non-exclusive, non-transferable license to access and use the Services for your own lawful personal use.</p>
+      <p>No ownership interest is transferred to you.</p>
+      <p>You may not reproduce, modify, distribute, sell, license, publicly display, commercially exploit, or create derivative works from Motiv content without prior written permission, except where applicable law expressly permits such activity.</p>
+      <h2>15. TRADEMARKS</h2>
+      <p>"Motiv," "Motiv Brands," "Leads Motiv," "Window Motiv," and the names, logos, slogans, designs, and trade dress associated with Motiv consumer brands are trademarks or other brand identifiers owned by or licensed to Motiv.</p>
+      <p>Nothing in these Terms grants you a license to use those marks.</p>
+      <p>Use of a Motiv brand name in metadata, paid-search advertising, domain names, social-media identifiers, competitor advertising, or other commercial materials without authorization may violate our rights.</p>
+      <p>Third-party brand names, including the names of participating window replacement and home-improvement providers, are the property of their respective owners and are used for identification purposes only.</p>
+      <h2>16. THIRD-PARTY WEBSITES AND SERVICES</h2>
+      <p>Our Services may contain links to or integrations with websites, tools, applications, or services operated by third parties.</p>
+      <p>Motiv does not control those third parties and is not responsible for their independent: content; availability; security; privacy practices; terms; representations; products; or services.</p>
+      <p>Your interactions with a third party are governed by your relationship with that third party.</p>
+      <p>A link or referral does not necessarily constitute an endorsement.</p>
+      <h2>17. PRIVACY</h2>
+      <p>Our collection and processing of personal information are described in our <a href="/privacy-policy">Privacy Policy</a>.</p>
+      <p>By using the Services, you acknowledge that you have access to these privacy disclosures.</p>
+      <p>The Privacy Policy does not independently create communications consent, and communications consent language presented at the point of collection does not eliminate rights provided under applicable privacy law.</p>
+      <h2>18. DISPUTE RESOLUTION, BINDING ARBITRATION, AND CLASS-ACTION WAIVER</h2>
+      <p class="wl-note">PLEASE READ THIS SECTION CAREFULLY. IT AFFECTS YOUR LEGAL RIGHTS.</p>
+      <h3>A. Informal Resolution First</h3>
+      <p>Before initiating arbitration or litigation, you and Motiv agree to make a reasonable good-faith attempt to resolve the dispute informally.</p>
+      <p>A consumer must send a written Notice of Dispute to:</p>
+      <p class="wl-addr">Motiv Brands<br>
+        Attn: Legal Department<br>
+        1621 Central Ave #8227<br>
+        Cheyenne, WY 82001</p>
+      <p>or:</p>
+      <p class="wl-addr">privacy@motivbrands.co</p>
+      <p>The Notice of Dispute should include: your name; your contact information; a description of the dispute; the facts giving rise to the dispute; and the relief requested.</p>
+      <p>If Motiv has a dispute with you, we will send a Notice of Dispute using reasonably available contact information.</p>
+      <p>The parties will have 30 days after receipt of the Notice of Dispute to attempt to resolve the matter before either party initiates arbitration, except where immediate injunctive relief is reasonably necessary.</p>
+      <h3>B. Agreement to Arbitrate</h3>
+      <p>Except for disputes expressly excluded below, you and Motiv agree that any dispute, claim, or controversy arising out of or relating to: these Terms; our Privacy Policy; your use of the Services; a form submission; communications with Motiv; a consumer lead; a referral or provider match; advertising relating to the Services; the collection or processing of information; telephone calls or text messages; any relationship between you and Motiv; or the interpretation, enforceability, formation, scope, or validity of this arbitration agreement, will be resolved through final and binding individual arbitration rather than in court.</p>
+      <p>The arbitration agreement is intended to be interpreted broadly.</p>
+      <h3>C. Federal Arbitration Act</h3>
+      <p>The parties acknowledge that the Services involve interstate commerce.</p>
+      <p>The Federal Arbitration Act ("FAA"), 9 U.S.C. §§ 1–16, governs the interpretation and enforcement of this arbitration agreement.</p>
+      <p>To the extent state law applies to issues not governed by the FAA, Wyoming law will apply without regard to conflict-of-law principles, except where applicable law requires otherwise.</p>
+      <h3>D. Arbitration Administrator</h3>
+      <p>Unless the parties mutually agree otherwise, arbitration will be administered by the American Arbitration Association ("AAA") under the applicable AAA Consumer Arbitration Rules in effect when the arbitration is initiated.</p>
+      <p>If AAA is unavailable or unwilling to administer the arbitration, the parties will attempt in good faith to select another nationally recognized arbitration provider. If they cannot agree, a court of competent jurisdiction may appoint an arbitration provider or arbitrator consistent with the FAA.</p>
+      <h3>E. Location and Format</h3>
+      <p>Where applicable consumer arbitration rules require, the arbitration may occur: remotely; by telephone or videoconference; based on written submissions; or in or reasonably near the county where you reside. The arbitrator may conduct proceedings in another manner if the parties agree.</p>
+      <h3>F. Arbitration Authority</h3>
+      <p>The arbitrator may award any remedy or relief that would otherwise be available to the individual claimant under applicable law, subject to the limitations of this arbitration agreement.</p>
+      <p>The arbitrator will apply applicable substantive law and applicable statutes of limitation.</p>
+      <p>The arbitrator must issue an individual decision and may not award relief to persons who are not parties to the arbitration.</p>
+      <h3>G. INDIVIDUAL ARBITRATION ONLY — CLASS-ACTION WAIVER</h3>
+      <p class="wl-note">YOU AND MOTIV AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN AN INDIVIDUAL CAPACITY.</p>
+      <p>To the fullest extent permitted by law: claims may not be brought as a plaintiff or class member in a class action; claims may not be brought as part of a collective action; claims may not be brought as part of a representative action; claims of multiple individuals may not be consolidated without the written agreement of all parties; the arbitrator may not preside over a class, collective, consolidated, coordinated, or representative proceeding; and the arbitrator may award relief only to the individual party seeking relief and only to the extent necessary to resolve that individual party's claim.</p>
+      <h3>H. JURY-TRIAL WAIVER</h3>
+      <p class="wl-note">TO THE FULLEST EXTENT PERMITTED BY LAW, YOU AND MOTIV EACH WAIVE THE RIGHT TO A TRIAL BY JURY FOR ANY CLAIM SUBJECT TO THIS ARBITRATION AGREEMENT.</p>
+      <h3>I. Small-Claims Court</h3>
+      <p>Either party may bring an individual claim in a court of competent jurisdiction that qualifies as small-claims court, provided the claim remains individual and within that court's jurisdiction.</p>
+      <p>If a claim originally filed in small-claims court is transferred, removed, or appealed to another court, either party may elect arbitration where permitted by law.</p>
+      <h3>J. Intellectual-Property and Unauthorized-Access Claims</h3>
+      <p>Notwithstanding the arbitration agreement, either party may seek temporary, preliminary, or other appropriate injunctive relief in a court of competent jurisdiction to prevent or stop: infringement or misuse of intellectual property; unauthorized access to computer systems; scraping; hacking; malicious attacks; theft of confidential information; or similar conduct that could cause immediate or irreparable harm. Seeking such relief does not waive arbitration of other claims.</p>
+      <h3>K. Government Enforcement</h3>
+      <p>Nothing in these Terms prevents you from reporting a matter to or communicating with a governmental or regulatory agency.</p>
+      <p>Nothing in this arbitration agreement limits the lawful authority of a government agency to investigate or bring an enforcement action.</p>
+      <h3>L. 30-Day Right to Opt Out of Arbitration</h3>
+      <p>You may opt out of this arbitration agreement by sending written notice within 30 days after the date you first affirmatively agree to these Terms.</p>
+      <p>Your notice must include: your full name; the email address or telephone number associated with your interaction with Motiv; a statement that you wish to opt out of the arbitration agreement in the Motiv Terms of Use; and the date of your request.</p>
+      <p>Send the request to:</p>
+      <p class="wl-addr">privacy@motivbrands.co</p>
+      <p>with the subject line:</p>
+      <p class="wl-addr">ARBITRATION OPT-OUT</p>
+      <p>or mail it to:</p>
+      <p class="wl-addr">Motiv Brands<br>
+        Attn: Arbitration Opt-Out<br>
+        1621 Central Ave #8227<br>
+        Cheyenne, WY 82001</p>
+      <p>Opting out of arbitration will not affect your ability to use the Services.</p>
+      <p>An arbitration opt-out applies only to the arbitration agreement and does not cancel or revoke any separate communications consent. Communications consent may be revoked using the methods identified in the applicable disclosure.</p>
+      <h3>M. Severability</h3>
+      <p>Except as provided below, if any portion of this arbitration agreement is found unenforceable, that portion will be severed and the remaining provisions will remain in effect to the fullest extent permitted by law.</p>
+      <p>If the prohibition against class, collective, or representative arbitration is found unenforceable with respect to a particular claim or request for relief and that determination cannot lawfully be severed, then that claim or request for relief will proceed in a court of competent jurisdiction rather than class or representative arbitration.</p>
+      <p>The remaining arbitrable claims will remain subject to individual arbitration to the extent permitted by law.</p>
+      <h2>19. GOVERNING LAW</h2>
+      <p>Except for the arbitration agreement, which is governed by the Federal Arbitration Act as described above, these Terms and any dispute not subject to arbitration are governed by the laws of the State of Wyoming, without regard to conflict-of-law principles, except where applicable consumer law requires otherwise.</p>
+      <h2>20. VENUE FOR NON-ARBITRABLE DISPUTES</h2>
+      <p>To the extent a dispute is not required to be arbitrated and is not eligible for small-claims court, you and Motiv agree that the dispute will be brought in a state or federal court with appropriate jurisdiction located in or serving Laramie County, Wyoming, except where applicable law prohibits or limits such a venue requirement.</p>
+      <p>You and Motiv consent to personal jurisdiction in those courts for such disputes.</p>
+      <h2>21. DISCLAIMER OF WARRANTIES</h2>
+      <p class="wl-note">TO THE FULLEST EXTENT PERMITTED BY LAW, THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE."</p>
+      <p class="wl-note">MOTIV DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING WARRANTIES OF: MERCHANTABILITY; FITNESS FOR A PARTICULAR PURPOSE; TITLE; NON-INFRINGEMENT; ACCURACY; AVAILABILITY; AND RESULTS.</p>
+      <p>We do not warrant that: the Services will always be available; information will always be complete or error-free; forms will always function without interruption; a provider will respond; a provider will meet your expectations; the Services will result in savings; you will qualify for any service, rebate, incentive, or financing; or use of the Services will achieve any particular result. Some jurisdictions do not allow certain warranty exclusions, so some of these exclusions may not apply to you.</p>
+      <h2>22. LIMITATION OF LIABILITY</h2>
+      <p class="wl-note">TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, MOTIV AND ITS PARENTS, SUBSIDIARIES, AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, CONTRACTORS, AND AGENTS WILL NOT BE LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES ARISING FROM OR RELATING TO THE SERVICES.</p>
+      <p>This includes, where permitted by law, damages relating to: loss of data; loss of opportunity; loss of profits; decisions made by independent providers; provider conduct; workmanship or installation quality; property damage caused by a provider; website interruption; unauthorized third-party conduct; or reliance on general informational content.</p>
+      <p class="wl-note">TO THE FULLEST EXTENT PERMITTED BY LAW, MOTIV'S AGGREGATE LIABILITY ARISING FROM OR RELATING TO YOUR USE OF A FREE CONSUMER LEAD-GENERATION SERVICE WILL NOT EXCEED $100, UNLESS APPLICABLE LAW REQUIRES A GREATER AMOUNT OR PROHIBITS SUCH A LIMITATION.</p>
+      <p>Nothing in these Terms excludes liability that cannot legally be excluded or limited.</p>
+      <h2>23. INDEMNIFICATION</h2>
+      <p>To the fullest extent permitted by law, you agree to indemnify and hold harmless Motiv and its parents, subsidiaries, affiliates, officers, directors, employees, contractors, and agents from claims, liabilities, damages, losses, and reasonable costs arising from your: fraudulent use of the Services; unauthorized submission of another person's information; submission of a request for a property you are not authorized to act for; violation of these Terms; infringement of another person's rights; malicious interference with our systems; or unlawful commercial exploitation of our Services.</p>
+      <p>This provision does not require a consumer to indemnify Motiv for Motiv's own unlawful conduct and will apply only to the extent permitted by applicable law.</p>
+      <h2>24. SUSPENSION AND TERMINATION</h2>
+      <p>We may suspend, restrict, or terminate access to the Services where we reasonably believe a user: violated these Terms; submitted fraudulent or abusive information; attacked or interfered with our systems; used automated access without authorization; infringed our rights; or created legal, security, or operational risk.</p>
+      <p>We may also modify or discontinue a Service at any time.</p>
+      <p>Provisions that by their nature should survive termination will survive, including provisions concerning intellectual property, disclaimers, limitation of liability, indemnification, dispute resolution, and governing law.</p>
+      <h2>25. CHANGES TO THE SERVICES</h2>
+      <p>We may: add or remove Services; launch new brands; discontinue brands; modify website features; change questionnaires; change participating providers; modify matching processes; or update technology.</p>
+      <p>The availability of a particular provider, brand, program, offer, or Service may change without notice.</p>
+      <h2>26. CHANGES TO THESE TERMS</h2>
+      <p>We may update these Terms from time to time.</p>
+      <p>When we do, we will update the Last Updated date at the top of the Terms.</p>
+      <p>If required by applicable law, we will provide additional notice or obtain renewed agreement before a material change becomes binding.</p>
+      <p>The version of the Terms presented to and affirmatively accepted by you will be retained where reasonably appropriate for evidentiary and compliance purposes.</p>
+      <h2>27. ELECTRONIC RECORDS AND SIGNATURES</h2>
+      <p>Where you take an electronic action indicating agreement, you agree that: the action may constitute your electronic signature; electronic records may be used to document the transaction; your electronic acceptance may have the same legal effect as a handwritten signature to the extent permitted by law; and Motiv may retain evidence of your electronic interaction, including date, time, IP address, webpage, disclosure version, checkbox state, consent certificate, and related records.</p>
+      <p>This provision does not expand the scope of any separate communications consent.</p>
+      <h2>28. ASSIGNMENT</h2>
+      <p>You may not assign your rights or obligations under these Terms without our prior written consent.</p>
+      <p>Motiv may assign these Terms in connection with: a corporate reorganization; merger; acquisition; sale of assets; financing; transfer of a business or brand; or transfer among affiliated companies, subject to applicable law.</p>
+      <h2>29. SEVERABILITY</h2>
+      <p>Except where Section 18 provides a more specific severability rule, if any provision of these Terms is held invalid or unenforceable, that provision will be enforced to the maximum extent permitted by law and the remaining provisions will remain in effect.</p>
+      <h2>30. NO WAIVER</h2>
+      <p>A failure by Motiv to enforce a provision of these Terms does not waive our right to enforce that provision or another provision later.</p>
+      <h2>31. ENTIRE AGREEMENT</h2>
+      <p>These Terms, together with our: Privacy Policy; Brands, Affiliates, and Marketing Partners Disclosure; form-specific disclosures; communications-consent disclosures; and any supplemental terms expressly applicable to a particular Service, constitute the applicable agreement between you and Motiv concerning your use of the Services.</p>
+      <p>If a form-specific disclosure conflicts with these general Terms regarding the scope of a particular authorization or consent, the more specific disclosure presented at the point of collection controls with respect to that authorization or consent.</p>
+      <h2>32. CONTACT INFORMATION</h2>
+      <p>Questions concerning these Terms may be directed to:</p>
+      <p class="wl-addr">Motiv Brands<br>
+        1621 Central Ave #8227<br>
+        Cheyenne, WY 82001<br>
+        Email: privacy@motivbrands.co<br>
+        Telephone: 877-674-6382</p>
+      <p>A current list of Motiv consumer-facing brands and DBAs is available through our <a href="/disclosures/marketing-partners">Brands, Affiliates, and Marketing Partners Disclosure</a>.</p>
+      <p>A current list of participating lead recipients is available through our <a href="/disclosures/marketing-partners">Marketing Partners Disclosure</a>.</p>
+  </article>
+</div>
+
+<div id="wm-global-footer" class="wmf-compact-root" data-wmf-version="V1.1.0">
+  <style>
+    #wm-global-footer {
+      --wmf-navy-1100: #000f1d;
+      --wmf-navy-1050: #001526;
+      --wmf-navy-1000: #00182e;
+      --wmf-navy-950: #002647;
+      --wmf-blue-700: #005baa;
+      --wmf-blue-600: #1686ce;
+      --wmf-blue-100: #dceff9;
+      --wmf-orange-700: #bd4b18;
+      --wmf-orange-600: #dd5d20;
+      --wmf-orange-500: #f47a38;
+      --wmf-white: #ffffff;
+      --wmf-text: #d9e7f0;
+      --wmf-muted: #9db2c1;
+      --wmf-line: rgba(255, 255, 255, 0.13);
+      --wmf-focus: 0 0 0 4px rgba(58, 167, 223, 0.28);
+      --wmf-transition: 180ms ease;
+
+      display: block !important;
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      clear: both;
+      overflow: hidden;
+      color: var(--wmf-white);
+      background:
+        radial-gradient(circle at 95% 0,
+          rgba(22, 134, 206, 0.13),
+          transparent 30%),
+        linear-gradient(145deg,
+          var(--wmf-navy-1000),
+          var(--wmf-navy-1100));
+      font-family:
+        Inter,
+        Arial,
+        Helvetica,
+        sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      text-align: left;
+      visibility: visible !important;
+      opacity: 1 !important;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #wm-global-footer,
+    #wm-global-footer *,
+    #wm-global-footer *::before,
+    #wm-global-footer *::after {
+      box-sizing: border-box;
+    }
+
+    #wm-global-footer a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    #wm-global-footer button {
+      font: inherit;
+    }
+
+    #wm-global-footer svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    #wm-global-footer .wmf-container {
+      width: min(100%, 1600px);
+      margin: 0 auto;
+      padding-right: clamp(18px, 4vw, 64px);
+      padding-left: clamp(18px, 4vw, 64px);
+    }
+
+    /* TOP ROW */
+    #wm-global-footer .wmf-primary {
+      border-top: 4px solid var(--wmf-blue-600);
+      border-bottom: 1px solid var(--wmf-line);
+    }
+
+    #wm-global-footer .wmf-primary-inner {
+      display: grid;
+      grid-template-columns:
+        minmax(270px, 1.05fr) minmax(0, 1.45fr) auto;
+      align-items: center;
+      gap: clamp(26px, 4vw, 64px);
+      padding-top: clamp(30px, 4vw, 48px);
+      padding-bottom: clamp(30px, 4vw, 48px);
+    }
+
+    /* BRAND */
+    #wm-global-footer .wmf-brand-link {
+      display: inline-flex;
+      width: fit-content;
+      max-width: 100%;
+      align-items: center;
+      gap: 13px;
+      border-radius: 14px;
+    }
+
+    #wm-global-footer .wmf-brand-link:focus-visible {
+      outline: none;
+      box-shadow: var(--wmf-focus);
+    }
+
+    #wm-global-footer .wmf-logo {
+      display: grid;
+      position: relative;
+      width: 54px;
+      height: 54px;
+      flex: 0 0 54px;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 15px;
+      color: var(--wmf-white);
+      background:
+        linear-gradient(145deg,
+          var(--wmf-blue-700),
+          var(--wmf-blue-600));
+      box-shadow: 0 14px 30px rgba(0, 72, 132, 0.28);
+    }
+
+    #wm-global-footer .wmf-logo::after {
+      position: absolute;
+      right: -7px;
+      bottom: -7px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--wmf-orange-500);
+      content: "";
+    }
+
+    #wm-global-footer .wmf-logo svg {
+      position: relative;
+      z-index: 1;
+      width: 29px;
+      height: 29px;
+    }
+
+    #wm-global-footer .wmf-brand-copy {
+      display: block;
+      min-width: 0;
+    }
+
+    #wm-global-footer .wmf-brand-name {
+      display: block;
+      color: var(--wmf-white);
+      font-family:
+        Georgia,
+        "Times New Roman",
+        serif;
+      font-size: clamp(26px, 2.3vw, 34px);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.045em;
+      white-space: nowrap;
+    }
+
+    #wm-global-footer .wmf-brand-name strong {
+      color: #ffab7b;
+      font-weight: inherit;
+    }
+
+    #wm-global-footer .wmf-brand-tagline {
+      display: block;
+      margin-top: 4px;
+      color: #b9cedc;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    /* NAVIGATION */
+    #wm-global-footer .wmf-navigation {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px 22px;
+    }
+
+    #wm-global-footer .wmf-nav-link {
+      position: relative;
+      display: inline-flex;
+      min-height: 38px;
+      align-items: center;
+      border-radius: 8px;
+      color: #b6cad7;
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.3;
+      white-space: nowrap;
+      transition:
+        color var(--wmf-transition),
+        transform var(--wmf-transition);
+    }
+
+    #wm-global-footer .wmf-nav-link::after {
+      position: absolute;
+      right: 0;
+      bottom: 5px;
+      left: 0;
+      height: 2px;
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg,
+          var(--wmf-blue-600),
+          var(--wmf-orange-500));
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--wmf-transition);
+      content: "";
+    }
+
+    #wm-global-footer .wmf-nav-link:hover,
+    #wm-global-footer .wmf-nav-link.wmf-active {
+      color: var(--wmf-white);
+      transform: translateY(-1px);
+    }
+
+    #wm-global-footer .wmf-nav-link:hover::after,
+    #wm-global-footer .wmf-nav-link.wmf-active::after {
+      transform: scaleX(1);
+    }
+
+    #wm-global-footer .wmf-nav-link:focus-visible {
+      outline: none;
+      box-shadow: var(--wmf-focus);
+    }
+
+    /* CTA */
+    #wm-global-footer .wmf-survey-button {
+      display: inline-flex;
+      min-height: 52px;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 13px 18px;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      cursor: pointer;
+      color: var(--wmf-white);
+      background:
+        linear-gradient(135deg,
+          var(--wmf-orange-600),
+          var(--wmf-orange-500));
+      box-shadow: 0 13px 28px rgba(189, 75, 24, 0.27);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.2;
+      white-space: nowrap;
+      transition:
+        transform var(--wmf-transition),
+        box-shadow var(--wmf-transition),
+        background var(--wmf-transition);
+    }
+
+    #wm-global-footer .wmf-survey-button:hover {
+      transform: translateY(-2px);
+      background:
+        linear-gradient(135deg,
+          var(--wmf-orange-700),
+          var(--wmf-orange-600));
+      box-shadow: 0 17px 34px rgba(189, 75, 24, 0.34);
+    }
+
+    #wm-global-footer .wmf-survey-button:focus-visible {
+      outline: none;
+      box-shadow:
+        var(--wmf-focus),
+        0 13px 28px rgba(189, 75, 24, 0.27);
+    }
+
+    #wm-global-footer .wmf-survey-button svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 17px;
+    }
+
+    /* DISCLOSURE ROW */
+    #wm-global-footer .wmf-secondary {
+      padding-top: 20px;
+      padding-bottom: 20px;
+    }
+
+    #wm-global-footer .wmf-secondary-inner {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 24px;
+    }
+
+    #wm-global-footer .wmf-disclosure {
+      max-width: 1100px;
+      margin: 0;
+      color: var(--wmf-muted);
+      font-size: 10px;
+      line-height: 1.65;
+    }
+
+    #wm-global-footer .wmf-disclosure strong {
+      color: #dce9f1;
+    }
+
+    #wm-global-footer .wmf-bottom-meta {
+      display: grid;
+      justify-items: end;
+      gap: 6px;
+    }
+
+    #wm-global-footer .wmf-copyright {
+      margin: 0;
+      color: #849bab;
+      font-size: 10px;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    #wm-global-footer .wmf-legal-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px 14px;
+    }
+
+    #wm-global-footer .wmf-legal-link {
+      border-radius: 5px;
+      color: #9cb1c0;
+      font-size: 10px;
+      font-weight: 800;
+      transition: color var(--wmf-transition);
+    }
+
+    #wm-global-footer .wmf-legal-link:hover,
+    #wm-global-footer .wmf-legal-link.wmf-active {
+      color: var(--wmf-white);
+    }
+
+    #wm-global-footer .wmf-legal-link:focus-visible {
+      outline: none;
+      box-shadow: var(--wmf-focus);
+    }
+
+    @media (max-width: 1050px) {
+      #wm-global-footer .wmf-primary-inner {
+        grid-template-columns:
+          minmax(250px, 1fr) auto;
+      }
+
+      #wm-global-footer .wmf-navigation {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: flex-start;
+        padding-top: 2px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      #wm-global-footer .wmf-primary-inner {
+        grid-template-columns:
+          minmax(0, 1fr) auto;
+        gap: 22px 16px;
+      }
+
+      #wm-global-footer .wmf-brand-tagline {
+        white-space: normal;
+      }
+
+      #wm-global-footer .wmf-navigation {
+        display: grid;
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 4px 16px;
+      }
+
+      #wm-global-footer .wmf-nav-link {
+        width: fit-content;
+      }
+
+      #wm-global-footer .wmf-secondary-inner {
+        grid-template-columns: 1fr;
+      }
+
+      #wm-global-footer .wmf-bottom-meta {
+        justify-items: start;
+      }
+
+      #wm-global-footer .wmf-legal-links {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 520px) {
+      #wm-global-footer .wmf-container {
+        padding-right: 16px;
+        padding-left: 16px;
+      }
+
+      #wm-global-footer .wmf-primary-inner {
+        grid-template-columns: 1fr;
+        padding-top: 28px;
+        padding-bottom: 28px;
+      }
+
+      #wm-global-footer .wmf-survey-button {
+        width: 100%;
+      }
+
+      #wm-global-footer .wmf-navigation {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+
+      #wm-global-footer .wmf-nav-link {
+        min-height: 34px;
+      }
+
+      #wm-global-footer .wmf-logo {
+        width: 49px;
+        height: 49px;
+        flex-basis: 49px;
+      }
+
+      #wm-global-footer .wmf-brand-name {
+        font-size: 25px;
+      }
+
+      #wm-global-footer .wmf-secondary {
+        padding-top: 18px;
+        padding-bottom: 18px;
+      }
+
+      #wm-global-footer .wmf-copyright {
+        white-space: normal;
+      }
+    }
+
+    @media print {
+
+      #wm-global-footer .wmf-navigation,
+      #wm-global-footer .wmf-survey-button,
+      #wm-global-footer .wmf-legal-links {
+        display: none !important;
+      }
+
+      #wm-global-footer {
+        color: #000000;
+        background: #ffffff;
+      }
+
+      #wm-global-footer .wmf-primary {
+        border-color: #777777;
+      }
+
+      #wm-global-footer .wmf-brand-name,
+      #wm-global-footer .wmf-disclosure strong {
+        color: #000000;
+      }
+
+      #wm-global-footer .wmf-disclosure,
+      #wm-global-footer .wmf-copyright {
+        color: #000000;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      #wm-global-footer *,
+      #wm-global-footer *::before,
+      #wm-global-footer *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+
+  <div class="wmf-primary">
+    <div class="wmf-container">
+      <div class="wmf-primary-inner">
+        <a class="wmf-brand-link" href="/" data-wmf-nav-link
+          aria-label="WindowMotiv home">
+          <span class="wmf-logo" aria-hidden="true">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="6" y="5" width="20" height="22" rx="1.5" stroke="currentColor" stroke-width="2"></rect>
+
+              <path d="M16 6v20M7 16h18" stroke="currentColor" stroke-width="2"></path>
+
+              <path d="m19.5 20 2.2 2.2 4.2-4.8" stroke="#ffab7b" stroke-width="2.2" stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </span>
+
+          <span class="wmf-brand-copy">
+            <span class="wmf-brand-name">
+              Window<strong>Motiv</strong>
+            </span>
+
+            <span class="wmf-brand-tagline">
+              Smarter window project matching
+            </span>
+          </span>
+        </a>
+
+        <nav class="wmf-navigation" aria-label="WindowMotiv footer navigation">
+          <a class="wmf-nav-link" href="/" data-wmf-nav-link>
+            Home
+          </a>
+
+          <a class="wmf-nav-link" href="/Partner.html" data-wmf-nav-link>
+            Partner Offers
+          </a>
+
+          <a class="wmf-nav-link" href="/Disclosure.html" data-wmf-nav-link>
+            Affiliates
+          </a>
+
+
+          <a class="wmf-nav-link" href="/disclosures/marketing-partners" data-wmf-nav-link>
+            Marketing Partners
+          </a>
+
+          <a class="wmf-nav-link" href="/privacy-policy" data-wmf-nav-link>
+            Privacy
+          </a>
+
+          <a class="wmf-nav-link" href="/terms-of-use" data-wmf-nav-link>
+            Terms
+          </a>
+        </nav>
+
+        <button class="wmf-survey-button" type="button" data-wmf-survey-trigger data-cta-page="global-footer"
+          data-cta-section="compact-footer" data-cta-name="start-my-project"
+          aria-label="Open the WindowMotiv project survey">
+          Start My Project
+
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="wmf-secondary">
+    <div class="wmf-container">
+      <div class="wmf-secondary-inner">
+        <p class="wmf-disclosure">
+          <strong>WindowMotiv disclosure:</strong>
+          Window Motiv is a DBA of Motiv Brands Group, LLC. Window Motiv
+          connects consumers with participating window replacement and
+          home-improvement providers. By submitting a request, you agree to
+          our Terms of Use and acknowledge our Privacy Policy. Your
+          information may be shared with participating providers and
+          marketing partners as described in our Marketing Partners
+          Disclosure and Privacy Policy.
+        </p>
+
+        <div class="wmf-bottom-meta">
+          <p class="wmf-copyright">
+            © <span data-wmf-year>2026</span> WindowMotiv. All rights reserved.
+          </p>
+
+          <nav class="wmf-legal-links" aria-label="WindowMotiv legal links">
+            <a class="wmf-legal-link" href="/privacy-policy" data-wmf-nav-link>
+              Privacy Policy
+            </a>
+
+            <a class="wmf-legal-link" href="/terms-of-use" data-wmf-nav-link>
+              Terms of Use
+            </a>
+
+            <a class="wmf-legal-link" href="/Disclosure.html" data-wmf-nav-link>
+              Affiliate Disclosure
+            </a>
+
+            <a class="wmf-legal-link" href="/disclosures/marketing-partners" data-wmf-nav-link>
+              Marketing Partners
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var root =
+        document.getElementById("wm-global-footer");
+
+      if (!root) {
+        return;
+      }
+
+      if (
+        root.getAttribute("data-wmf-initialized") ===
+        "true"
+      ) {
+        return;
+      }
+
+      root.setAttribute(
+        "data-wmf-initialized",
+        "true"
+      );
+
+      var CONFIG = {
+        version:
+          "V1.1.0",
+
+        homeUrl:
+          "/",
+
+        surveyEvent:
+          "windowmotiv:open-survey"
+      };
+
+      function setCurrentYear() {
+        var nodes =
+          root.querySelectorAll(
+            "[data-wmf-year]"
+          );
+
+        var year =
+          String(
+            new Date().getFullYear()
+          );
+
+        var index;
+
+        for (
+          index = 0;
+          index < nodes.length;
+          index += 1
+        ) {
+          nodes[index].textContent =
+            year;
+        }
+      }
+
+      function normalizePath(value) {
+        var anchor =
+          document.createElement("a");
+
+        anchor.href = value;
+
+        return (
+          anchor.pathname.replace(/\/+$/, "") ||
+          "/"
+        );
+      }
+
+      function setActiveLinks() {
+        var currentPath =
+          normalizePath(
+            window.location.href
+          );
+
+        var links =
+          root.querySelectorAll(
+            "[data-wmf-nav-link]"
+          );
+
+        var index;
+
+        for (
+          index = 0;
+          index < links.length;
+          index += 1
+        ) {
+          var linkPath =
+            normalizePath(
+              links[index].getAttribute(
+                "href"
+              )
+            );
+
+          if (linkPath === currentPath) {
+            links[index].classList.add(
+              "wmf-active"
+            );
+
+            links[index].setAttribute(
+              "aria-current",
+              "page"
+            );
+          }
+        }
+      }
+
+      function getSurveyDetail(trigger) {
+        return {
+          brand:
+            "WindowMotiv",
+
+          source:
+            "global-footer",
+
+          page_name:
+            window.location.pathname
+              .replace(/^\/+|\/+$/g, "") ||
+            "home",
+
+          cta_section:
+            trigger.getAttribute(
+              "data-cta-section"
+            ) ||
+            "compact-footer",
+
+          cta_name:
+            trigger.getAttribute(
+              "data-cta-name"
+            ) ||
+            "start-my-project",
+
+          referring_path:
+            window.location.pathname,
+
+          referring_url:
+            window.location.href,
+
+          timestamp:
+            new Date().toISOString()
+        };
+      }
+
+      function trySurveyFunction(detail) {
+        if (
+          typeof window.openWindowMotivSurvey ===
+          "function"
+        ) {
+          window.openWindowMotivSurvey(
+            detail
+          );
+
+          return true;
+        }
+
+        if (
+          typeof window.openWMSurvey ===
+          "function"
+        ) {
+          window.openWMSurvey(
+            detail
+          );
+
+          return true;
+        }
+
+        if (
+          window.WindowMotivSurvey &&
+          typeof window.WindowMotivSurvey.open ===
+          "function"
+        ) {
+          window.WindowMotivSurvey.open(
+            detail
+          );
+
+          return true;
+        }
+
+        if (
+          window.WM_SURVEY &&
+          typeof window.WM_SURVEY.open ===
+          "function"
+        ) {
+          window.WM_SURVEY.open(
+            detail
+          );
+
+          return true;
+        }
+
+        return false;
+      }
+
+      function dispatchSurveyEvent(detail) {
+        if (
+          typeof window.CustomEvent !==
+          "function"
+        ) {
+          return false;
+        }
+
+        var handled = false;
+
+        detail.markHandled =
+          function () {
+            handled = true;
+          };
+
+        var event =
+          new CustomEvent(
+            CONFIG.surveyEvent,
+            {
+              bubbles: true,
+              cancelable: true,
+              detail: detail
+            }
+          );
+
+        window.dispatchEvent(event);
+
+        return (
+          handled ||
+          event.defaultPrevented
+        );
+      }
+
+      function tryExistingSurveyTrigger() {
+        var selectors = [
+          "[data-wm-open-survey]",
+          "[data-windowmotiv-open-survey]",
+          "[data-open-survey]",
+          "[data-survey-trigger]",
+          ".wm-open-survey",
+          ".windowmotiv-open-survey",
+          "#wm-open-survey",
+          "#windowmotiv-open-survey",
+          ".open-survey",
+          ".survey-trigger"
+        ];
+
+        var selectorIndex;
+
+        for (
+          selectorIndex = 0;
+          selectorIndex < selectors.length;
+          selectorIndex += 1
+        ) {
+          var candidates =
+            document.querySelectorAll(
+              selectors[selectorIndex]
+            );
+
+          var candidateIndex;
+
+          for (
+            candidateIndex = 0;
+            candidateIndex < candidates.length;
+            candidateIndex += 1
+          ) {
+            if (
+              !root.contains(
+                candidates[candidateIndex]
+              ) &&
+              !candidates[candidateIndex].disabled
+            ) {
+              candidates[
+                candidateIndex
+              ].click();
+
+              return true;
+            }
+          }
+        }
+
+        return false;
+      }
+
+      function buildFallbackUrl(detail) {
+        var separator =
+          CONFIG.homeUrl.indexOf("?") === -1
+            ? "?"
+            : "&";
+
+        return (
+          CONFIG.homeUrl +
+          separator +
+          "open_survey=1" +
+          "&page_name=" +
+          encodeURIComponent(
+            detail.page_name
+          ) +
+          "&cta_section=" +
+          encodeURIComponent(
+            detail.cta_section
+          ) +
+          "&cta_name=" +
+          encodeURIComponent(
+            detail.cta_name
+          ) +
+          "&referring_path=" +
+          encodeURIComponent(
+            detail.referring_path
+          )
+        );
+      }
+
+      function openSurvey(trigger) {
+        var detail =
+          getSurveyDetail(trigger);
+
+        var opened =
+          trySurveyFunction(detail);
+
+        if (!opened) {
+          opened =
+            dispatchSurveyEvent(detail);
+        }
+
+        if (!opened) {
+          opened =
+            tryExistingSurveyTrigger();
+        }
+
+        if (!opened) {
+          window.location.href =
+            buildFallbackUrl(detail);
+        }
+      }
+
+      function initializeSurveyTrigger() {
+        var triggers =
+          root.querySelectorAll(
+            "[data-wmf-survey-trigger]"
+          );
+
+        var index;
+
+        for (
+          index = 0;
+          index < triggers.length;
+          index += 1
+        ) {
+          triggers[index].addEventListener(
+            "click",
+            function () {
+              openSurvey(this);
+            }
+          );
+        }
+      }
+
+      setCurrentYear();
+      setActiveLinks();
+      initializeSurveyTrigger();
+    })();
+  </script>
+</div>
