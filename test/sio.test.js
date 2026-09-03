@@ -30,7 +30,7 @@ function renderedDisclosure(file, inputId) {
   );
   assert.ok(match, `Consent label ${inputId} must exist in ${file}`);
   return match[1]
-    .replace(/<span[^>]*>[\s\S]*?<\/span>/gi, "Motiv Brands Group, LLC. DBA Window Motiv")
+    .replace(/<span[^>]*>[\s\S]*?<\/span>/gi, "Motiv Brands Group, LLC DBA Window Motiv")
     .replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&quot;/g, "\"")
