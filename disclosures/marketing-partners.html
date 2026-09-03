@@ -101,6 +101,10 @@ The same header on the home page detects open_survey=1 and opens the survey.
 
   gtag('config', 'G-XN16LGMPYV');
 </script>
+<!-- Window Motiv favicon. Pages are head-less fragments, so /favicon.ico at the
+     site root is the reliable path; these links are honoured where supported. -->
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <header id="wm-global-header" class="wm-global-header" data-wm-header-version="V1.0.4">
   <style>
     #wm-global-header {
@@ -168,6 +172,69 @@ The same header on the home page detects open_survey=1 and opens the survey.
 
     :root {
       --wm-header-offset: 5.7rem;
+    }
+
+    /* Site-wide header cleanup (Partner Page Update, applied to every page):
+       no site menu, no phone line. The brand mark and the project CTA remain.
+       Hidden rather than removed because the header script binds to them. */
+    #wm-global-header .wm-header-nav,
+    #wm-global-header .wm-header-call,
+    #wm-global-header .wm-header-mobile-call,
+    #wm-global-header .wm-header-menu-toggle,
+    #wm-global-header .wm-header-mobile-panel {
+      display: none !important;
+    }
+
+    /* With the drawer gone, keep the project CTA reachable on small screens. */
+    @media (max-width: 68rem) {
+      #wm-global-header .wm-header-project-cta {
+        display: inline-flex !important;
+      }
+    }
+
+    #wm-global-header .wm-header-project-cta__short {
+      display: none;
+    }
+
+    /* Phone widths: brand wordmark and CTA share one row. !important because the header's own responsive rules come later in the sheet. The tagline is the
+       widest part of the brand block, so it goes; the CTA uses its short
+       label; the wordmark steps down a size. */
+    @media (max-width: 34rem) {
+      #wm-global-header .wm-header-brand-tagline,
+      #wm-global-header .wm-header-project-cta__long,
+      #wm-global-header .wm-header-project-cta svg {
+        display: none;
+      }
+
+      #wm-global-header .wm-header-project-cta__short {
+        display: inline;
+      }
+
+      #wm-global-header .wm-header-brand-name {
+        font-size: 1.1rem !important;
+      }
+
+      #wm-global-header .wm-header-project-cta {
+        padding-inline: 0.8rem !important;
+        font-size: 0.8125rem !important;
+      }
+    }
+
+    /* Narrowest phones: the logo tile always stays. Make room by stepping the
+       wordmark and the CTA padding down once more instead. */
+    @media (max-width: 22rem) {
+      #wm-global-header .wm-header-brand-name {
+        font-size: 0.95rem !important;
+      }
+
+      #wm-global-header .wm-header-brand {
+        gap: 0.5rem !important;
+      }
+
+      #wm-global-header .wm-header-project-cta {
+        padding-inline: 0.6rem !important;
+        font-size: 0.75rem !important;
+      }
     }
 
     /* A page modal owns the viewport, so the navbar gets out of the way.
@@ -1171,7 +1238,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
           <button class="wm-header-project-cta js-wp-open-form" type="button" data-wm-header-survey-trigger
             data-cta-page="global-header" data-cta-section="desktop-navigation" data-cta-name="start-my-project"
             aria-label="Open the WindowMotiv project survey">
-            Start My Project
+            <span class="wm-header-project-cta__long">Start My Project</span><span class="wm-header-project-cta__short">Start Project</span>
 
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -2893,8 +2960,9 @@ Do not hand-edit this generated file.
 
     #wm-global-footer .wmf-primary-inner {
       display: grid;
+      /* brand | Start My Project. The middle menu column is gone. */
       grid-template-columns:
-        minmax(270px, 1.05fr) minmax(0, 1.45fr) auto;
+        minmax(0, 1fr) auto;
       align-items: center;
       gap: clamp(26px, 4vw, 64px);
       padding-top: clamp(30px, 4vw, 48px);
@@ -3321,33 +3389,6 @@ Do not hand-edit this generated file.
           </span>
         </a>
 
-        <nav class="wmf-navigation" aria-label="WindowMotiv footer navigation">
-          <a class="wmf-nav-link" href="/" data-wmf-nav-link>
-            Home
-          </a>
-
-          <a class="wmf-nav-link" href="/Partner.html" data-wmf-nav-link>
-            Partner Offers
-          </a>
-
-          <a class="wmf-nav-link" href="/Disclosure.html" data-wmf-nav-link>
-            Affiliates
-          </a>
-
-
-          <a class="wmf-nav-link" href="/disclosures/marketing-partners" data-wmf-nav-link>
-            Marketing Partners
-          </a>
-
-          <a class="wmf-nav-link" href="/privacy-policy" data-wmf-nav-link>
-            Privacy
-          </a>
-
-          <a class="wmf-nav-link" href="/terms-of-use" data-wmf-nav-link>
-            Terms
-          </a>
-        </nav>
-
         <button class="wmf-survey-button" type="button" data-wmf-survey-trigger data-cta-page="global-footer"
           data-cta-section="compact-footer" data-cta-name="start-my-project"
           aria-label="Open the WindowMotiv project survey">
@@ -3388,10 +3429,6 @@ Do not hand-edit this generated file.
 
             <a class="wmf-legal-link" href="/terms-of-use" data-wmf-nav-link>
               Terms of Use
-            </a>
-
-            <a class="wmf-legal-link" href="/Disclosure.html" data-wmf-nav-link>
-              Affiliate Disclosure
             </a>
 
             <a class="wmf-legal-link" href="/disclosures/marketing-partners" data-wmf-nav-link>
