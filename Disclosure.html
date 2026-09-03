@@ -87,7 +87,7 @@ FALLBACK
 ------------------------------------------------------------------------------
 If no survey implementation exists on the current page, the visitor is sent to:
 
-https://cwae.windowmotiv.com/home-992457?open_survey=1
+/?open_survey=1
 
 The same header on the home page detects open_survey=1 and opens the survey.
 ==============================================================================
@@ -101,6 +101,10 @@ The same header on the home page detects open_survey=1 and opens the survey.
 
   gtag('config', 'G-XN16LGMPYV');
 </script>
+<!-- Window Motiv favicon. Pages are head-less fragments, so /favicon.ico at the
+     site root is the reliable path; these links are honoured where supported. -->
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <header id="wm-global-header" class="wm-global-header" data-wm-header-version="V1.0.4">
   <style>
     #wm-global-header {
@@ -164,6 +168,85 @@ The same header on the home page detects open_survey=1 and opens the survey.
     #wm-global-header svg {
       display: block;
       max-width: 100%;
+    }
+
+    :root {
+      --wm-header-offset: 5.7rem;
+    }
+
+    /* Site-wide header cleanup (Partner Page Update, applied to every page):
+       no site menu, no phone line. The brand mark and the project CTA remain.
+       Hidden rather than removed because the header script binds to them. */
+    #wm-global-header .wm-header-nav,
+    #wm-global-header .wm-header-call,
+    #wm-global-header .wm-header-mobile-call,
+    #wm-global-header .wm-header-menu-toggle,
+    #wm-global-header .wm-header-mobile-panel {
+      display: none !important;
+    }
+
+    /* With the drawer gone, keep the project CTA reachable on small screens. */
+    @media (max-width: 68rem) {
+      #wm-global-header .wm-header-project-cta {
+        display: inline-flex !important;
+      }
+    }
+
+    #wm-global-header .wm-header-project-cta__short {
+      display: none;
+    }
+
+    /* Phone widths: brand wordmark and CTA share one row. !important because the header's own responsive rules come later in the sheet. The tagline is the
+       widest part of the brand block, so it goes; the CTA uses its short
+       label; the wordmark steps down a size. */
+    @media (max-width: 34rem) {
+      #wm-global-header .wm-header-brand-tagline,
+      #wm-global-header .wm-header-project-cta__long,
+      #wm-global-header .wm-header-project-cta svg {
+        display: none;
+      }
+
+      #wm-global-header .wm-header-project-cta__short {
+        display: inline;
+      }
+
+      #wm-global-header .wm-header-brand-name {
+        font-size: 1.1rem !important;
+      }
+
+      #wm-global-header .wm-header-project-cta {
+        padding-inline: 0.8rem !important;
+        font-size: 0.8125rem !important;
+      }
+    }
+
+    /* Narrowest phones: the logo tile always stays. Make room by stepping the
+       wordmark and the CTA padding down once more instead. */
+    @media (max-width: 22rem) {
+      #wm-global-header .wm-header-brand-name {
+        font-size: 0.95rem !important;
+      }
+
+      #wm-global-header .wm-header-brand {
+        gap: 0.5rem !important;
+      }
+
+      #wm-global-header .wm-header-project-cta {
+        padding-inline: 0.6rem !important;
+        font-size: 0.75rem !important;
+      }
+    }
+
+    /* A page modal owns the viewport, so the navbar gets out of the way.
+       Hidden rather than merely lowered: the shell's backdrop-filter is
+       composited into its own layer that outpaints the dialog regardless of
+       z-index. */
+    body.wp-modal-open #wm-global-header,
+    body:has(.wp-modal[aria-hidden="false"]) #wm-global-header {
+      z-index: 1;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
     }
 
     #wm-global-header .wm-header-spacer {
@@ -1052,7 +1135,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
 
     <div class="wm-header-container">
       <div class="wm-header-inner">
-        <a class="wm-header-brand" href="index.html" aria-label="WindowMotiv home"
+        <a class="wm-header-brand" href="/" aria-label="WindowMotiv home"
           data-wm-nav-link>
           <span class="wm-header-logo" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
@@ -1079,19 +1162,19 @@ The same header on the home page detects open_survey=1 and opens the survey.
         <nav class="wm-header-nav" aria-label="WindowMotiv primary navigation">
           <ul class="wm-header-nav-list">
             <li class="wm-header-nav-item">
-              <a class="wm-header-nav-link" href="index.html" data-wm-nav-link>
+              <a class="wm-header-nav-link" href="/" data-wm-nav-link>
                 Home
               </a>
             </li>
 
             <li class="wm-header-nav-item">
-              <a class="wm-header-nav-link" href="Partner.html" data-wm-nav-link>
+              <a class="wm-header-nav-link" href="/Partner.html" data-wm-nav-link>
                 Partner Offers
               </a>
             </li>
 
             <li class="wm-header-nav-item">
-              <a class="wm-header-nav-link" href="Disclosure.html" data-wm-nav-link>
+              <a class="wm-header-nav-link" href="/Disclosure.html" data-wm-nav-link>
                 Affiliates
               </a>
             </li>
@@ -1108,7 +1191,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
               </button>
 
               <div class="wm-header-dropdown" id="wm-header-legal-dropdown" aria-hidden="true">
-                <a class="wm-header-dropdown-link" href="privacy.html" data-wm-nav-link>
+                <a class="wm-header-dropdown-link" href="/privacy-policy" data-wm-nav-link>
                   Privacy Policy
 
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1116,9 +1199,9 @@ The same header on the home page detects open_survey=1 and opens the survey.
                   </svg>
                 </a>
 
-                <a class="wm-header-dropdown-link" href="Terms.html"
+                <a class="wm-header-dropdown-link" href="/terms-of-use"
                   data-wm-nav-link>
-                  Terms of Service
+                  Terms of Use
 
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2"></path>
@@ -1155,7 +1238,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
           <button class="wm-header-project-cta js-wp-open-form" type="button" data-wm-header-survey-trigger
             data-cta-page="global-header" data-cta-section="desktop-navigation" data-cta-name="start-my-project"
             aria-label="Open the WindowMotiv project survey">
-            Start My Project
+            <span class="wm-header-project-cta__long">Start My Project</span><span class="wm-header-project-cta__short">Start Project</span>
 
             <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <path d="M5 12h14M14 7l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -1189,7 +1272,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
   <div class="wm-header-mobile-panel" id="wm-header-mobile-panel" aria-hidden="true">
     <div class="wm-header-mobile-drawer" role="dialog" aria-modal="true" aria-label="WindowMotiv mobile navigation">
       <div class="wm-header-mobile-top">
-        <a class="wm-header-brand" href="https://cwae.windowmotiv.com/home-992457" aria-label="WindowMotiv home"
+        <a class="wm-header-brand" href="/" aria-label="WindowMotiv home"
           data-wm-nav-link>
           <span class="wm-header-logo" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
@@ -1217,7 +1300,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
       </div>
 
       <nav class="wm-header-mobile-nav" aria-label="WindowMotiv mobile navigation links">
-        <a class="wm-header-mobile-nav-link" href="https://cwae.windowmotiv.com/home-992457" data-wm-nav-link>
+        <a class="wm-header-mobile-nav-link" href="/" data-wm-nav-link>
           Home
 
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1225,7 +1308,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
           </svg>
         </a>
 
-        <a class="wm-header-mobile-nav-link" href="https://cwae.windowmotiv.com/our-partner-offers" data-wm-nav-link>
+        <a class="wm-header-mobile-nav-link" href="/Partner.html" data-wm-nav-link>
           Partner Offers
 
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1233,7 +1316,7 @@ The same header on the home page detects open_survey=1 and opens the survey.
           </svg>
         </a>
 
-        <a class="wm-header-mobile-nav-link" href="https://cwae.windowmotiv.com/affiliate-disclosure" data-wm-nav-link>
+        <a class="wm-header-mobile-nav-link" href="/Disclosure.html" data-wm-nav-link>
           Affiliates
 
           <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1254,14 +1337,14 @@ The same header on the home page detects open_survey=1 and opens the survey.
         <div class="wm-header-mobile-legal-panel" id="wm-header-mobile-legal-panel" aria-hidden="true">
           <div class="wm-header-mobile-legal-inner">
             <div class="wm-header-mobile-legal-links">
-              <a class="wm-header-mobile-legal-link" href="https://cwae.windowmotiv.com/privacy-policy"
+              <a class="wm-header-mobile-legal-link" href="/privacy-policy"
                 data-wm-nav-link>
                 Privacy Policy
               </a>
 
-              <a class="wm-header-mobile-legal-link" href="https://cwae.windowmotiv.com/terms-of-service"
+              <a class="wm-header-mobile-legal-link" href="/terms-of-use"
                 data-wm-nav-link>
-                Terms of Service
+                Terms of Use
               </a>
             </div>
           </div>
@@ -1321,13 +1404,13 @@ The same header on the home page detects open_survey=1 and opens the survey.
           "WindowMotiv",
 
         HOME_URL:
-          "https://cwae.windowmotiv.com/home-992457",
+          "/",
 
         PRIVACY_URL:
-          "https://cwae.windowmotiv.com/privacy-policy",
+          "/privacy-policy",
 
         TERMS_URL:
-          "https://cwae.windowmotiv.com/terms-of-service",
+          "/terms-of-use",
 
         PHONE_VISIBLE:
           "1-855-524-1346",
@@ -1396,6 +1479,51 @@ The same header on the home page detects open_survey=1 and opens the survey.
 
       const mobileLegalPanel =
         root.querySelector("#wm-header-mobile-legal-panel");
+
+      const dropdownToggles =
+        Array.from(
+          root.querySelectorAll(
+            ".wm-header-dropdown-toggle"
+          )
+        );
+
+      const mobileDropdownToggles =
+        Array.from(
+          root.querySelectorAll(
+            ".wm-header-mobile-legal-toggle"
+          )
+        );
+
+      function dropdownPanelFor(toggle) {
+        return root.querySelector(
+          "#" +
+          toggle.getAttribute("aria-controls")
+        );
+      }
+
+      function setDropdownState(toggle, open) {
+        const panel =
+          dropdownPanelFor(toggle);
+
+        if (!panel) {
+          return;
+        }
+
+        panel.classList.toggle(
+          "is-open",
+          open
+        );
+
+        panel.setAttribute(
+          "aria-hidden",
+          String(!open)
+        );
+
+        toggle.setAttribute(
+          "aria-expanded",
+          String(open)
+        );
+      }
 
       let previousFocus = null;
       let surveyOpening = false;
@@ -1491,8 +1619,15 @@ The same header on the home page detects open_survey=1 and opens the survey.
           return;
         }
 
-        spacer.style.height =
-          `${shell.offsetHeight}px`;
+        const headerHeight = shell.offsetHeight;
+
+        spacer.style.height = `${headerHeight}px`;
+
+        // Published so sticky page furniture can clear the fixed header.
+        document.documentElement.style.setProperty(
+          "--wm-header-offset",
+          `${headerHeight}px`
+        );
       }
 
       function updateScrollState() {
@@ -1502,61 +1637,46 @@ The same header on the home page detects open_survey=1 and opens the survey.
         );
       }
 
-      function openDesktopLegal() {
-        legalDropdown.classList.add("is-open");
-
-        legalDropdown.setAttribute(
-          "aria-hidden",
-          "false"
-        );
-
-        legalToggle.setAttribute(
-          "aria-expanded",
-          "true"
-        );
+      function openDesktopDropdown(toggle) {
+        closeDesktopLegal();
+        setDropdownState(toggle, true);
       }
 
       function closeDesktopLegal() {
-        legalDropdown.classList.remove("is-open");
+        dropdownToggles.forEach((toggle) => {
+          setDropdownState(toggle, false);
+        });
+      }
 
-        legalDropdown.setAttribute(
-          "aria-hidden",
-          "true"
-        );
+      function openDesktopDropdownIsOpen(toggle) {
+        const panel =
+          dropdownPanelFor(toggle);
 
-        legalToggle.setAttribute(
-          "aria-expanded",
-          "false"
+        return Boolean(
+          panel &&
+          panel.classList.contains("is-open")
         );
       }
 
-      function toggleDesktopLegal() {
-        if (
-          legalDropdown.classList.contains("is-open")
-        ) {
+      function toggleDesktopDropdown(toggle) {
+        if (openDesktopDropdownIsOpen(toggle)) {
           closeDesktopLegal();
         } else {
-          openDesktopLegal();
+          openDesktopDropdown(toggle);
         }
       }
 
-      function toggleMobileLegal() {
-        const isOpen =
-          mobileLegalPanel.classList.contains("is-open");
+      function toggleMobileDropdown(toggle) {
+        const panel =
+          dropdownPanelFor(toggle);
 
-        mobileLegalPanel.classList.toggle(
-          "is-open",
-          !isOpen
-        );
+        if (!panel) {
+          return;
+        }
 
-        mobileLegalPanel.setAttribute(
-          "aria-hidden",
-          String(isOpen)
-        );
-
-        mobileLegalToggle.setAttribute(
-          "aria-expanded",
-          String(!isOpen)
+        setDropdownState(
+          toggle,
+          !panel.classList.contains("is-open")
         );
       }
 
@@ -1806,8 +1926,13 @@ The same header on the home page detects open_survey=1 and opens the survey.
       }
 
       function createFallbackSurveyUrl(detail) {
+        // HOME_URL is a site-relative path; a bare path is not a valid URL
+        // without a base, and a throw here would swallow the click.
         const url =
-          new URL(CONFIG.HOME_URL);
+          new URL(
+            CONFIG.HOME_URL,
+            window.location.origin
+          );
 
         url.searchParams.set(
           CONFIG.SURVEY_QUERY_KEY,
@@ -2018,8 +2143,6 @@ The same header on the home page detects open_survey=1 and opens the survey.
             window.location.href
           );
 
-        let legalIsActive = false;
-
         root
           .querySelectorAll("[data-wm-nav-link]")
           .forEach((link) => {
@@ -2050,40 +2173,49 @@ The same header on the home page detects open_survey=1 and opens the survey.
               );
             }
 
-            if (
-              isActive &&
-              (
-                linkPath ===
-                normalizePath(CONFIG.PRIVACY_URL) ||
-                linkPath ===
-                normalizePath(CONFIG.TERMS_URL)
-              )
-            ) {
-              legalIsActive = true;
-            }
           });
 
-        legalToggle.classList.toggle(
-          "is-active",
-          legalIsActive
-        );
+        // A dropdown reads as active when one of its own links is the page.
+        dropdownToggles
+          .concat(mobileDropdownToggles)
+          .forEach((toggle) => {
+            const panel =
+              dropdownPanelFor(toggle);
+
+            toggle.classList.toggle(
+              "is-active",
+              Boolean(
+                panel &&
+                panel.querySelector(
+                  "[data-wm-nav-link].is-active"
+                )
+              )
+            );
+          });
       }
 
       function initializeDesktopLegal() {
-        legalToggle.addEventListener(
-          "click",
-          (event) => {
-            event.stopPropagation();
-            toggleDesktopLegal();
-          }
-        );
+        dropdownToggles.forEach((toggle) => {
+          toggle.addEventListener(
+            "click",
+            (event) => {
+              event.stopPropagation();
+              toggleDesktopDropdown(toggle);
+            }
+          );
 
-        legalDropdown.addEventListener(
-          "click",
-          (event) => {
-            event.stopPropagation();
+          const panel =
+            dropdownPanelFor(toggle);
+
+          if (panel) {
+            panel.addEventListener(
+              "click",
+              (event) => {
+                event.stopPropagation();
+              }
+            );
           }
-        );
+        });
 
         document.addEventListener(
           "click",
@@ -2102,10 +2234,12 @@ The same header on the home page detects open_survey=1 and opens the survey.
           () => closeMenu()
         );
 
-        mobileLegalToggle.addEventListener(
-          "click",
-          toggleMobileLegal
-        );
+        mobileDropdownToggles.forEach((toggle) => {
+          toggle.addEventListener(
+            "click",
+            () => toggleMobileDropdown(toggle)
+          );
+        });
 
         mobilePanel.addEventListener(
           "click",
@@ -2133,11 +2267,14 @@ The same header on the home page detects open_survey=1 and opens the survey.
           "keydown",
           (event) => {
             if (event.key === "Escape") {
-              if (
-                legalDropdown.classList.contains("is-open")
-              ) {
+              const openToggle =
+                dropdownToggles.find(
+                  openDesktopDropdownIsOpen
+                );
+
+              if (openToggle) {
                 closeDesktopLegal();
-                legalToggle.focus();
+                openToggle.focus();
                 return;
               }
 
@@ -2311,8 +2448,8 @@ REPLACE_WITH_AFFILIATE_EMAIL
 REPLACE_WITH_AFFILIATE_PHONE
 REPLACE_WITH_MAILING_ADDRESS
 REPLACE_WITH_CITY_STATE_ZIP
-REPLACE_WITH_PRIVACY_POLICY_URL
-REPLACE_WITH_TERMS_OF_SERVICE_URL
+/privacy-policy
+/terms-of-use
 ==============================================================================
 -->
 
@@ -2903,8 +3040,18 @@ REPLACE_WITH_TERMS_OF_SERVICE_URL
     }
 
     #wp-affiliate-page .wp-policy-nav {
+      max-height: calc(100vh - var(--wm-header-offset, 5.7rem) - 1.5rem);
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    #wp-affiliate-page .wp-policy-card {
+      scroll-margin-top: calc(var(--wm-header-offset, 5.7rem) + 1.5rem);
+    }
+
+    #wp-affiliate-page .wp-policy-nav {
       position: sticky;
-      top: 1.5rem;
+      top: calc(var(--wm-header-offset, 5.7rem) + 1.5rem);
       overflow: hidden;
       border: 0.0625rem solid var(--wp-line);
       border-radius: var(--wp-radius-md);
@@ -4959,7 +5106,7 @@ REPLACE_WITH_TERMS_OF_SERVICE_URL
                     Additional information about collection, use, disclosure,
                     cookies, retention, and privacy rights is available in our
                     <a
-                      href="REPLACE_WITH_PRIVACY_POLICY_URL"
+                      href="/privacy-policy"
                       data-wp-privacy-link
                     >
                       Privacy Policy
@@ -5502,14 +5649,14 @@ REPLACE_WITH_TERMS_OF_SERVICE_URL
                   <p>
                     Use of this website is also subject to our
                     <a
-                      href="REPLACE_WITH_PRIVACY_POLICY_URL"
+                      href="/privacy-policy"
                       data-wp-privacy-link
                     >
                       Privacy Policy
                     </a>
                     and
                     <a
-                      href="REPLACE_WITH_TERMS_OF_SERVICE_URL"
+                      href="/terms-of-use"
                       data-wp-terms-link
                     >
                       Terms of Service
@@ -5632,10 +5779,10 @@ REPLACE_WITH_TERMS_OF_SERVICE_URL
           "REPLACE_WITH_AFFILIATE_PHONE",
 
         PRIVACY_POLICY_URL:
-          "REPLACE_WITH_PRIVACY_POLICY_URL",
+          "/privacy-policy",
 
         TERMS_OF_SERVICE_URL:
-          "REPLACE_WITH_TERMS_OF_SERVICE_URL"
+          "/terms-of-use"
       });
 
       const PARTICIPANTS = Object.freeze([
@@ -7053,8 +7200,9 @@ https://cwae.windowmotiv.com/terms-of-service
 
     #wm-global-footer .wmf-primary-inner {
       display: grid;
+      /* brand | Start My Project. The middle menu column is gone. */
       grid-template-columns:
-        minmax(270px, 1.05fr) minmax(0, 1.45fr) auto;
+        minmax(0, 1fr) auto;
       align-items: center;
       gap: clamp(26px, 4vw, 64px);
       padding-top: clamp(30px, 4vw, 48px);
@@ -7457,7 +7605,7 @@ https://cwae.windowmotiv.com/terms-of-service
   <div class="wmf-primary">
     <div class="wmf-container">
       <div class="wmf-primary-inner">
-        <a class="wmf-brand-link" href="index.html" data-wmf-nav-link
+        <a class="wmf-brand-link" href="/" data-wmf-nav-link
           aria-label="WindowMotiv home">
           <span class="wmf-logo" aria-hidden="true">
             <svg viewBox="0 0 32 32" fill="none">
@@ -7481,28 +7629,6 @@ https://cwae.windowmotiv.com/terms-of-service
           </span>
         </a>
 
-        <nav class="wmf-navigation" aria-label="WindowMotiv footer navigation">
-          <a class="wmf-nav-link" href="index.html" data-wmf-nav-link>
-            Home
-          </a>
-
-          <a class="wmf-nav-link" href="Partner.html" data-wmf-nav-link>
-            Partner Offers
-          </a>
-
-          <a class="wmf-nav-link" href="Disclosure.html" data-wmf-nav-link>
-            Affiliates
-          </a>
-
-          <a class="wmf-nav-link" href="privacy.html" data-wmf-nav-link>
-            Privacy
-          </a>
-
-          <a class="wmf-nav-link" href="Terms.html" data-wmf-nav-link>
-            Terms
-          </a>
-        </nav>
-
         <button class="wmf-survey-button" type="button" data-wmf-survey-trigger data-cta-page="global-footer"
           data-cta-section="compact-footer" data-cta-name="start-my-project"
           aria-label="Open the WindowMotiv project survey">
@@ -7522,15 +7648,13 @@ https://cwae.windowmotiv.com/terms-of-service
       <div class="wmf-secondary-inner">
         <p class="wmf-disclosure">
           <strong>WindowMotiv disclosure:</strong>
-          WindowMotiv is a window-project information, advertising,
-          lead-generation, referral, and provider-matching website.
-          WindowMotiv does not necessarily manufacture, sell, finance,
-          estimate, install, warrant, or service windows. Requests may be
-          routed or shared with independent participating providers based on
-          location, project information, campaign requirements, and
-          availability. Submission does not guarantee contact, acceptance,
-          an appointment, an estimate, an offer, financing, or project
-          completion.
+          Window Motiv is a DBA of Motiv Brands Group, LLC. Window Motiv
+          connects consumers with participating window replacement and
+          home-improvement providers. By submitting a request, you agree to
+          our Terms of Use and acknowledge our Privacy Policy. Your
+          information may be shared with participating providers and
+          marketing partners as described in our Marketing Partners
+          Disclosure and Privacy Policy.
         </p>
 
         <div class="wmf-bottom-meta">
@@ -7539,16 +7663,16 @@ https://cwae.windowmotiv.com/terms-of-service
           </p>
 
           <nav class="wmf-legal-links" aria-label="WindowMotiv legal links">
-            <a class="wmf-legal-link" href="https://cwae.windowmotiv.com/privacy-policy" data-wmf-nav-link>
+            <a class="wmf-legal-link" href="/privacy-policy" data-wmf-nav-link>
               Privacy Policy
             </a>
 
-            <a class="wmf-legal-link" href="https://cwae.windowmotiv.com/terms-of-service" data-wmf-nav-link>
-              Terms of Service
+            <a class="wmf-legal-link" href="/terms-of-use" data-wmf-nav-link>
+              Terms of Use
             </a>
 
-            <a class="wmf-legal-link" href="https://cwae.windowmotiv.com/affiliate-disclosure" data-wmf-nav-link>
-              Affiliate Disclosure
+            <a class="wmf-legal-link" href="/disclosures/marketing-partners" data-wmf-nav-link>
+              Marketing Partners
             </a>
           </nav>
         </div>
@@ -7584,7 +7708,7 @@ https://cwae.windowmotiv.com/terms-of-service
           "V1.1.0",
 
         homeUrl:
-          "https://cwae.windowmotiv.com/home-992457",
+          "/",
 
         surveyEvent:
           "windowmotiv:open-survey"
