@@ -33,6 +33,35 @@ test("normalizes contact values and does not trust browser routing fields", () =
   assert.equal(lead.taskName, "Window Replacement: 6+ Windows");
 });
 
+test("normalizes source attribution in the required priority order", () => {
+  const cases = [
+    [{
+      utm_id: "utm-id",
+      subID1: "sub-id",
+      utm_campaign: "campaign",
+      utm_source: "source"
+    }, "utm-id"],
+    [{
+      subID1: "sub-id",
+      utm_campaign: "campaign",
+      utm_source: "source"
+    }, "sub-id"],
+    [{
+      utm_campaign: "campaign",
+      utm_source: "source"
+    }, "campaign"],
+    [{
+      utm_source: "source"
+    }, "source"],
+    [{}, ""]
+  ];
+
+  for (const [attribution, expected] of cases) {
+    const lead = normalizeLead(validLead(attribution), context);
+    assert.equal(lead.subID1, expected);
+  }
+});
+
 test("keeps the window-count qualification helper exact", () => {
   assert.equal(taskNameForWindowCount("3-5", 3), "Window Replacement: 3-5 Windows");
   assert.equal(taskNameForWindowCount("4-5", 4), "Window Replacement: 3-5 Windows");

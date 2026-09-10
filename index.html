@@ -5428,6 +5428,8 @@ inside this browser code. Those must remain in the secure server-side router.
 
           <input type="hidden" name="utm_campaign" id="wp-utm-campaign">
 
+          <input type="hidden" name="utm_id" id="wp-utm-id">
+
           <input type="hidden" name="utm_term" id="wp-utm-term">
 
           <input type="hidden" name="utm_content" id="wp-utm-content">
@@ -6222,6 +6224,7 @@ inside this browser code. Those must remain in the secure server-side router.
           utm_source: "#wp-utm-source",
           utm_medium: "#wp-utm-medium",
           utm_campaign: "#wp-utm-campaign",
+          utm_id: "#wp-utm-id",
           utm_term: "#wp-utm-term",
           utm_content: "#wp-utm-content",
           gclid: "#wp-gclid",
@@ -7233,6 +7236,12 @@ inside this browser code. Those must remain in the secure server-side router.
           utm_campaign:
             sanitize(
               raw.utm_campaign,
+              180
+            ),
+
+          utm_id:
+            sanitize(
+              raw.utm_id,
               180
             ),
 

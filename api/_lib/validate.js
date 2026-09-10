@@ -154,7 +154,11 @@ function normalizeLead(body, context) {
     selected_offer_id: clean(source.selected_offer_id, 100),
     selected_offer_name: clean(source.selected_offer_name, 180),
     partner_match_preference: clean(source.partner_match_preference, 180),
-    subID1: clean(source.subID1 || source.utm_source, 180),
+    subID1:
+      clean(source.utm_id, 180) ||
+      clean(source.subID1, 180) ||
+      clean(source.utm_campaign, 180) ||
+      clean(source.utm_source, 180),
     subID2: clean(source.subID2 || source.utm_campaign, 180),
     subID3: clean(source.subID3 || source.utm_content, 180),
     page_url: clean(source.landing_page_url, 1000),

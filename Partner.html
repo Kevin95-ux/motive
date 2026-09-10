@@ -5279,6 +5279,12 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
           <input
             type="hidden"
+            name="utm_id"
+            id="wp-offer-utm-id"
+          >
+
+          <input
+            type="hidden"
             name="utm_term"
             id="wp-offer-utm-term"
           >
@@ -6230,6 +6236,7 @@ eligibility, window-count requirements, offer routing, and partner preference.
           utm_source: "#wp-offer-utm-source",
           utm_medium: "#wp-offer-utm-medium",
           utm_campaign: "#wp-offer-utm-campaign",
+          utm_id: "#wp-offer-utm-id",
           utm_term: "#wp-offer-utm-term",
           utm_content: "#wp-offer-utm-content",
           gclid: "#wp-offer-gclid",
@@ -7051,6 +7058,9 @@ eligibility, window-count requirements, offer routing, and partner preference.
 
           utm_campaign:
             sanitize(raw.utm_campaign, 180),
+
+          utm_id:
+            sanitize(raw.utm_id, 180),
 
           utm_term:
             sanitize(raw.utm_term, 180),
